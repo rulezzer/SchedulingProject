@@ -7,7 +7,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 
-public class Scheduling extends SubScene {
+public class SchedulingSubScene extends SubScene {
+
+    //Scehduling scheme
 
     AnchorPane root3 = (AnchorPane) this.getRoot();
 
@@ -18,7 +20,7 @@ public class Scheduling extends SubScene {
     private GridPane grid;
 
 
-    public Scheduling() {
+    public SchedulingSubScene() {
         super(new AnchorPane(), 800, 800);
 
         createGrid();
@@ -35,6 +37,8 @@ public class Scheduling extends SubScene {
         Button button1 = new Button("Button 1");
 
         grid.add(button1, 0, 0, 1, 1);
+
+        root3.getChildren().add(grid);
 
 
 

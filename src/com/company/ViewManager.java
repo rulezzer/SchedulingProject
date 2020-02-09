@@ -21,6 +21,9 @@ public class ViewManager {
 
     private Scene mainScene;
     private Stage mainStage;
+    private SchedulingSubScene schedulingSubScene;
+    protected BorderPane border = new BorderPane();
+
 
     private List<Process> processList = new ArrayList<>();
 
@@ -34,7 +37,6 @@ public class ViewManager {
 
 
         //Function to set an action when text field loses focus
-        BorderPane border = new BorderPane();
         HBox hbox = addHBox();
         border.setTop(hbox);
 
@@ -115,9 +117,8 @@ public class ViewManager {
             ATField.setMaxWidth(60);
 
             ATField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
-                if(!"".equals(newValue)) {
+                if(!"".equals(newValue))
                     processList.get(i).arrivalTime = Integer.parseInt(newValue);
-                }
             });
 
 
@@ -132,7 +133,7 @@ public class ViewManager {
             nproc.setTextFill(Color.WHITE);
 
 
-            tileRect.getChildren().addAll(ATLabel, ATField, burstLabel, addBurstField(i), nproc);
+            tileRect.getChildren().addAll(nproc, ATLabel, ATField, burstLabel, addBurstField(i));
 
             return tileRect;
         }
@@ -153,9 +154,9 @@ public class ViewManager {
 
 
         burstField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
-            if(!"".equals(newValue)) {
+            if(!"".equals(newValue))
                 processList.get(i).burst = Integer.parseInt(newValue);
-            }
+
         });
 
         return burstField;
@@ -169,6 +170,7 @@ public class ViewManager {
 
         scheduleButton.setOnAction((event) -> {
             System.out.println(java.util.List.of(processList)); //prin
+            createSchedulingSuScene();
         });
 
         return scheduleButton;
@@ -192,6 +194,15 @@ public class ViewManager {
         CheckBox preemptionCheck = new CheckBox("Priority");
         preemptionCheck.setTextFill(Color.WHITE);
         return preemptionCheck;
+
+    }
+
+    private void createSchedulingSuScene(){
+
+        schedulingSubScene = new SchedulingSubScene();
+        schedulingSubScene.setLayoutY(50);
+        border.setBottom(schedulingSubScene);
+        border.getChildren().add(schedulingSubScene);
 
     }
 
@@ -225,7 +236,6 @@ public class ViewManager {
         Process process = new Process();
 
         processList.add(process);
-
         addNewProcess();
 
         // DA OTTIMIZZARE
@@ -243,7 +253,6 @@ public class ViewManager {
             if(Integer.parseInt(newValue) > Integer.parseInt(oldValue))
                 //create processes when I change
                 addNewProcess();
-//                processList.add(addNewProcess(process)addNewProcess);
             else
                 processList.remove(processList.size()-1);
 

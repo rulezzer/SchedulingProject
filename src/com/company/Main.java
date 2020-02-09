@@ -14,7 +14,7 @@ public class Main extends Application {
 
             ViewManager manager = new ViewManager();
             primaryStage = manager.getMainStage();
-            primaryStage.setTitle("CSAS - CPU Scheduling Algorithm Simulation");
+            primaryStage.setTitle("CSAS - CPU Scheduling Algorithm Simulator");
             primaryStage.show();
 
         } catch(Exception e) {

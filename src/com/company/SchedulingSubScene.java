@@ -1,27 +1,36 @@
 package com.company;
 
-import javafx.scene.Parent;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SchedulingSubScene extends SubScene {
 
     //Scehduling scheme
 
-    AnchorPane root3 = (AnchorPane) this.getRoot();
+    AnchorPane root = (AnchorPane) this.getRoot();
 
     private static final int BOARD_COLUMN = 20;
     private static final int BOARD_ROW = 20;
-    private static final int TILE_SIZE = 40;
+    private static final int TILE_SIZE = 20;
 
     private GridPane grid;
 
+    private List<Process> processList ;
 
-    public SchedulingSubScene() {
+    public SchedulingSubScene(List processList) {
         super(new AnchorPane(), 800, 800);
+
+        this.processList = processList;
 
         createGrid();
 
@@ -31,26 +40,36 @@ public class SchedulingSubScene extends SubScene {
     public GridPane createGrid() {
 
 
+
+        Process process = new Process();
+
+        int n_col = processList.size();
+        System.out.println(n_col);
+
         grid = new GridPane();
         Rectangle rectField;
 
-        Button button1 = new Button("Button 1");
 
-        grid.add(button1, 0, 0, 1, 1);
-
-        root3.getChildren().add(grid);
+        root.getChildren().add(grid);
 
 
+        for (int i = 0; i<processList.size(); i++) {
 
-        rectField = new Rectangle(TILE_SIZE, TILE_SIZE);
-//                rectField.setFill(new ImagePattern(img));
-        rectField.setStyle("-fx-background-color: Black");
+            StackPane stack = new StackPane();
+            Label processNumber = new Label("P " +(i+1));
+            processNumber.setTextFill(Color.WHITE);
+            rectField = new Rectangle(50, TILE_SIZE);
+
+            stack.getChildren().addAll(rectField, processNumber);
+
+            rectField.setStyle("-fx-fill: F96531; -fx-stroke: FFFFFF; -fx-stroke-width: 1;");
 
 
+            GridPane.setConstraints(stack, 0, i);
+            grid.getChildren().addAll(stack);
 
-        GridPane.setConstraints(rectField, 0, 0);
-        grid.getChildren().addAll(rectField);
 
+        }
         return grid;
 
     }

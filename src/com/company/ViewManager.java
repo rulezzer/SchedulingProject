@@ -24,8 +24,7 @@ public class ViewManager {
     private SchedulingSubScene schedulingSubScene;
     protected BorderPane border = new BorderPane();
 
-
-    private List<Process> processList = new ArrayList<>();
+    public List<Process> processList = new ArrayList<>();
 
     public ViewManager(){
 
@@ -199,7 +198,7 @@ public class ViewManager {
 
     private void createSchedulingSuScene(){
 
-        schedulingSubScene = new SchedulingSubScene();
+        schedulingSubScene = new SchedulingSubScene(processList);
         schedulingSubScene.setLayoutY(50);
         border.setBottom(schedulingSubScene);
         border.getChildren().add(schedulingSubScene);

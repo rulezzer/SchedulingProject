@@ -55,6 +55,18 @@ public class SchedulingSubScene extends SubScene {
 
         for (int i = 0; i<processList.size(); i++) {
 
+            for (int j=0; j<processList.get(i).CalculateCompletion(processList, i); j++){
+                rectField = new Rectangle(50, TILE_SIZE);
+
+
+                rectField.setStyle("-fx-fill: F96531; -fx-stroke: FFFFFF; -fx-stroke-width: 1;");
+
+
+                GridPane.setConstraints(rectField, j, i);
+                grid.getChildren().addAll(rectField);
+
+            }
+
             StackPane stack = new StackPane();
             Label processNumber = new Label("P " +(i+1));
             processNumber.setTextFill(Color.WHITE);
@@ -62,7 +74,7 @@ public class SchedulingSubScene extends SubScene {
 
             stack.getChildren().addAll(rectField, processNumber);
 
-            rectField.setStyle("-fx-fill: F96531; -fx-stroke: FFFFFF; -fx-stroke-width: 1;");
+            rectField.setStyle("-fx-fill: F96231; -fx-stroke: FFFFFF; -fx-stroke-width: 1;");
 
 
             GridPane.setConstraints(stack, 0, i);

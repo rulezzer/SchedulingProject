@@ -169,7 +169,7 @@ public class ViewManager {
 
         scheduleButton.setOnAction((event) -> {
             System.out.println(java.util.List.of(processList)); //prin
-            createSchedulingSuScene();
+            createSchedulingSubScene();
         });
 
         return scheduleButton;
@@ -189,14 +189,14 @@ public class ViewManager {
     }
 
 
-    private CheckBox addPreemptionCheckBox(){
-        CheckBox preemptionCheck = new CheckBox("Priority");
-        preemptionCheck.setTextFill(Color.WHITE);
-        return preemptionCheck;
+    private CheckBox addPriorityCheckBox(){
+        CheckBox priorityCheck = new CheckBox("Priority");
+        priorityCheck.setTextFill(Color.WHITE);
+        return priorityCheck;
 
     }
 
-    private void createSchedulingSuScene(){
+    private void createSchedulingSubScene(){
 
         schedulingSubScene = new SchedulingSubScene(processList);
         schedulingSubScene.setLayoutY(50);
@@ -280,7 +280,7 @@ public class ViewManager {
         miniHBox.getChildren().addAll(new Label("N. Proc: "), numProcessField);
 
         //add to the VBox buttons and combobox
-        buttonVBox.getChildren().addAll(miniHBox, addChooseSchedAlg(),addPreemptionCheckBox(), addScheduleButton());
+        buttonVBox.getChildren().addAll(miniHBox, addChooseSchedAlg(), addPriorityCheckBox(), addScheduleButton());
 
         hbox.getChildren().addAll(buttonVBox, gridDisplay.getDisplay());
 

@@ -9,7 +9,8 @@ public class Process implements ProcessInterface{
     protected Integer arrivalTime;
     protected Integer burst;
     private Integer completion =0;
-    private float turnAround;
+    private Integer turnAround;
+    private Integer waitingTime;
     protected String type;
 
 
@@ -76,7 +77,6 @@ public class Process implements ProcessInterface{
 
     protected Integer CalculateCompletion(List<Process> processList, int index){
 
-        System.out.println("");
         if (index == 0){
             processList.get(index).completion = processList.get(index).arrivalTime + processList.get(index).burst;
         }else
@@ -92,5 +92,21 @@ public class Process implements ProcessInterface{
 
     }
 
+    //************* aggiunto da davide, domenica 9/2/20 verso le 16.30
+    public Integer CalculateTurnaroundTime(List<Process> processList, int index){
+        processList.get(index).turnAround = processList.get(index).completion - processList.get(index).arrivalTime;
+
+        return turnAround;
+
+    }
+
+
+    //************* aggiunto da davide, domenica 9/2/20 verso le 16.30
+    public Integer CalculateWaitingTime(List<Process> processList, int index){
+
+        processList.get(index).waitingTime = processList.get(index).turnAround - processList.get(index).burst;
+
+        return waitingTime;
+    }
 
 }

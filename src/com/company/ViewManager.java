@@ -258,6 +258,10 @@ public class ViewManager {
                 System.out.println("Arrival Time: " + xxx.getArrivalTime() + " - Burst Time: " + xxx.getBurst()
                         + " - Completion time: " + xxx.CalculateCompletion(processList, index));
 
+                //************* aggiunto da davide, domenica 9/2/20 verso le 16.30
+                System.out.println("Turnaround Time: " + xxx.CalculateTurnaroundTime(processList, index) +
+                        "- Waiting Time: " + xxx.CalculateWaitingTime(processList, index));
+
                 index++;
             }
         });

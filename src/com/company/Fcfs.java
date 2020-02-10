@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Fcfs implements SchedulingStrategy {
     @Override
-    public void schedule(List<Process> processList, Process process) {
+    public void schedule(List<Process> processList) {
 
 
         int temp;
@@ -37,6 +37,8 @@ public class Fcfs implements SchedulingStrategy {
                     " - Burst Time = " +  processList.get(i).burst);
             System.out.println("Completion = "+ processList.get(i).CalculateCompletion(processList, i)
              + " - Starting = " + processList.get(i).getStartingTime(processList, i));
+            System.out.println("Turnaround = " + processList.get(i).CalculateTurnaroundTime(processList, i) +
+                        " - Waitin = " + processList.get(i).CalculateWaitingTime(processList, i));
 
         }
 

@@ -166,9 +166,11 @@ public class ViewManager {
         Button scheduleButton = new Button("Schedule");
         scheduleButton.setPrefSize(100, 20);
         scheduleButton.setAlignment(Pos.CENTER);
+        Fcfs al = new Fcfs();
 
         scheduleButton.setOnAction((event) -> {
             System.out.println(java.util.List.of(processList)); //prin
+          al.schedule(processList);
             createSchedulingSubScene();
         });
 
@@ -199,9 +201,9 @@ public class ViewManager {
     private void createSchedulingSubScene(){
 
         schedulingSubScene = new SchedulingSubScene(processList);
-        schedulingSubScene.setLayoutY(50);
-        border.setBottom(schedulingSubScene);
-        border.getChildren().add(schedulingSubScene);
+        schedulingSubScene.setLayoutY(150);
+        //border.setBottom(schedulingSubScene);
+       border.getChildren().add(schedulingSubScene);
 
     }
 
@@ -269,9 +271,6 @@ public class ViewManager {
             }
 
 
-            Fcfs al = new Fcfs();
-
-            al.schedule(processList, process);
         });
 
 

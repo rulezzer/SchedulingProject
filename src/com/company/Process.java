@@ -14,6 +14,8 @@ public class Process implements ProcessInterface{
     private Integer waitingTime;
     private String type;
     private Integer startingTime;
+    private Integer contextSwitch=1;
+
 
 
     //costruttore
@@ -88,7 +90,7 @@ public class Process implements ProcessInterface{
                 processList.get(index).completion = processList.get(index).arrivalTime + processList.get(index).burst;
             }
             else{
-                processList.get(index).completion = processList.get(index-1).completion + processList.get(index).burst;
+                processList.get(index).completion = processList.get(index-1).completion + processList.get(index).burst + processList.get(index-1).contextSwitch;
             }
         }
         return completion;
@@ -102,10 +104,14 @@ public class Process implements ProcessInterface{
             processList.get(index).startingTime = processList.get(index).arrivalTime;
         }else
         {   if(processList.get(index).arrivalTime > processList.get(index-1).completion){
-            processList.get(index).startingTime = processList.get(index).arrivalTime;
+              if(processList.get(index-1).startingTime + processList.get(index-1).contextSwitch > processList.get(index).arrivalTime) {
+                  processList.get(index).startingTime = processList.get(index - 1).startingTime + processList.get(index - 1).completion + processList.get(index - 1).contextSwitch;
+              }else {
+                  processList.get(index).startingTime = processList.get(index).arrivalTime;
+              }
 
         }else
-            processList.get(index).startingTime =  processList.get(index-1).completion;
+            processList.get(index).startingTime =  processList.get(index-1).completion + processList.get(index).contextSwitch;
         }
 
         return startingTime;
@@ -128,5 +134,7 @@ public class Process implements ProcessInterface{
 
         return waitingTime;
     }
+
+
 
 }

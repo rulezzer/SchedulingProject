@@ -1,6 +1,7 @@
 package com.company;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -11,7 +12,8 @@ public class Process implements ProcessInterface{
     private Integer completion =0;
     private Integer turnAround;
     private Integer waitingTime;
-    protected String type;
+    private String type;
+    private Integer startingTime;
 
 
     //costruttore
@@ -58,6 +60,7 @@ public class Process implements ProcessInterface{
     }
 
     public String toString(){
+
         return "PROCESSOOOOO";
     }
 
@@ -91,6 +94,23 @@ public class Process implements ProcessInterface{
         return completion;
 
     }
+
+
+    public Integer getStartingTime(List<Process> processList, int index){
+
+        if(index == 0){
+            processList.get(index).startingTime = processList.get(index).arrivalTime;
+        }else
+        {   if(processList.get(index).arrivalTime > processList.get(index-1).completion){
+            processList.get(index).startingTime = processList.get(index).arrivalTime;
+
+        }else
+            processList.get(index).startingTime =  processList.get(index-1).completion;
+        }
+
+        return startingTime;
+    }
+
 
     //************* aggiunto da davide, domenica 9/2/20 verso le 16.30
     public Integer CalculateTurnaroundTime(List<Process> processList, int index){

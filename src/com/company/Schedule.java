@@ -2,6 +2,8 @@ package com.company;
 
 import javafx.scene.layout.GridPane;
 
+import java.util.List;
+
 public class Schedule {
 
     protected SchedulingStrategy schedulingStrategy;
@@ -19,7 +21,7 @@ public class Schedule {
 
     public void sort() {
         if (this.schedulingStrategy != null) {
-            this.schedulingStrategy.schedule();
+          //  this.schedulingStrategy.schedule();
         }
     }
 

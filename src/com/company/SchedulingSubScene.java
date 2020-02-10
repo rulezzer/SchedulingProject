@@ -1,5 +1,8 @@
 package com.company;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -9,8 +12,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class SchedulingSubScene extends SubScene {
@@ -48,24 +54,46 @@ public class SchedulingSubScene extends SubScene {
 
         grid = new GridPane();
         Rectangle rectField;
+        Rectangle rectProcess;
+
 
 
         root.getChildren().add(grid);
 
+        Rectangle rectField2;
+  int i = 0;
+        for (i = processList.get(i).getStartingTime(processList, i); i<processList.get(i).CalculateCompletion(processList, i); i++) {
+            System.out.println("Primo FOR");
+            for (int j = 1; j <= processList.get(i).CalculateCompletion(processList, i); j++) {
+                System.out.println("Secondo FOR" + j);
+                rectProcess = new Rectangle(TILE_SIZE, TILE_SIZE);
 
-        for (int i = 0; i<processList.size(); i++) {
-
-            for (int j=0; j<processList.get(i).CalculateCompletion(processList, i); j++){
-                rectField = new Rectangle(50, TILE_SIZE);
-
-
-                rectField.setStyle("-fx-fill: F96531; -fx-stroke: FFFFFF; -fx-stroke-width: 1;");
+                rectProcess.setStyle("-fx-fill: #00AB84; "); //fai colori random
+                rectProcess.setArcHeight(5);
+                rectProcess.setArcWidth(5);
+                GridPane.setConstraints(rectProcess, j, i);
+                grid.getChildren().addAll(rectProcess);
 
 
-                GridPane.setConstraints(rectField, j, i);
-                grid.getChildren().addAll(rectField);
+                FadeTransition ft = new FadeTransition(Duration.millis(500), rectProcess);
+                ft.setFromValue(0.25);
+                ft.setToValue(1);
+                ft.play();
+
+                TranslateTransition openNav = new TranslateTransition(Duration.millis(500), rectProcess);
+                openNav.fromXProperty().setValue(-10);
+                openNav.setToX(0);
+
+                openNav.play();
+                TranslateTransition closeNav = new TranslateTransition(new Duration(500), rectProcess);
+
+                closeNav.setToX(-(rectProcess.getWidth()));
 
             }
+            }
+
+
+
 
             StackPane stack = new StackPane();
             Label processNumber = new Label("P " +(i+1));
@@ -77,12 +105,28 @@ public class SchedulingSubScene extends SubScene {
             rectField.setStyle("-fx-fill: F96231; -fx-stroke: FFFFFF; -fx-stroke-width: 1;");
 
 
+
+
             GridPane.setConstraints(stack, 0, i);
             grid.getChildren().addAll(stack);
 
 
-        }
-        return grid;
+
+
+
+//        System.out.println("gg " + processList.size());
+//        System.out.println();
+//        System.out.println("ff " + processList.get(processList.size()).CalculateCompletion(processList, processList.size()));
+//
+//        for (int i=0; i<processList.get(processList.size()).CalculateCompletion(processList, i);i++) {
+//            Label xAxis = new Label(String.valueOf(processList.get(i).CalculateCompletion(processList, i)));
+//            GridPane.setConstraints(xAxis, i, 0);
+//
+//            grid.getChildren().add(xAxis);
+//
+//        }
+
+            return grid;
 
     }
 

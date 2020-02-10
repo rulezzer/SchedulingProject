@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.List;
+
 public interface SchedulingStrategy {
-    public void schedule();
+    public void schedule(List<Process> processList, Process process);
 }

@@ -263,16 +263,18 @@ public class ViewManager {
             int index = 0;
             for (Process xxx : processList) {
 
-                System.out.println("Arrival Time: " + xxx.getArrivalTime() + " - Burst Time: " + xxx.getBurst()
-                        + " - Completion time: " + xxx.CalculateCompletion(processList, index));
-
-                //************* aggiunto da davide, domenica 9/2/20 verso le 16.30
-                System.out.println("Turnaround Time: " + xxx.CalculateTurnaroundTime(processList, index) +
-                        "- Waiting Time: " + xxx.CalculateWaitingTime(processList, index));
+                System.out.println("Arrival Time: " + xxx.getArrivalTime() + " - Burst Time: " + xxx.getBurst());
 
                 index++;
             }
+
+
+            Fcfs al = new Fcfs();
+
+            al.schedule(processList, process);
         });
+
+
 
 
         addScheduleButton().setLayoutY(numProcessField.getLayoutY()+100);

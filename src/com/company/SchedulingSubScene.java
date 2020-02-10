@@ -105,7 +105,7 @@ for(Process process1: processList) {
         rectProcess.setArcHeight(5);
         rectProcess.setArcWidth(5);
         GridPane.setConstraints(rectProcess,i, processList.indexOf(process1));
-        //grid.getChildren().addAll(rectProcess);
+        grid.getChildren().addAll(rectProcess);
 
 
         FadeTransition ft = new FadeTransition(Duration.millis(500), rectProcess);

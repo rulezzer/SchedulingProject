@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
@@ -170,7 +171,7 @@ public class ViewManager {
 
         scheduleButton.setOnAction((event) -> {
             System.out.println(java.util.List.of(processList)); //prin
-          al.schedule(processList);
+            al.schedule(processList);
             createSchedulingSubScene();
         });
 
@@ -202,8 +203,8 @@ public class ViewManager {
 
         schedulingSubScene = new SchedulingSubScene(processList);
         schedulingSubScene.setLayoutY(150);
-        //border.setBottom(schedulingSubScene);
-       border.getChildren().add(schedulingSubScene);
+//        border.setBottom(schedulingSubScene);
+        border.getChildren().add(schedulingSubScene);
 
     }
 
@@ -213,6 +214,7 @@ public class ViewManager {
         hbox.setPadding(new Insets(15, 12, 15, 12));
         hbox.setSpacing(10);
         hbox.setStyle("-fx-background-color: #336699;");
+        hbox.setEffect(new DropShadow(2d, 0d, +2d, Color.LIGHTGREY));
 
         //per allineare immissione n.processi e bottone Schedule
         VBox buttonVBox = new VBox();
@@ -220,8 +222,11 @@ public class ViewManager {
         buttonVBox.setMinWidth(150);
 
         HBox miniHBox = new HBox();
+        HBox miniHBox2 = new HBox();
+//        miniHBox.setAlignment(Pos.BASELINE_CENTER);
 
         var numProcessField = new Spinner<Integer>();
+        var CSField = new Spinner<Integer>();
 
         Label ATLabel = new Label("Arrival");
         ATLabel.setTextFill(Color.WHITE);
@@ -232,6 +237,9 @@ public class ViewManager {
 
 
 
+        var cc = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4, 1);
+        CSField.setValueFactory(cc);
+        CSField.setMaxWidth(60);
 
 
         Process process = new Process();
@@ -279,9 +287,10 @@ public class ViewManager {
         addScheduleButton().setLayoutY(numProcessField.getLayoutY()+100);
 
         miniHBox.getChildren().addAll(new Label("N. Proc: "), numProcessField);
+        miniHBox2.getChildren().addAll(new Label("CS: "), CSField);
 
         //add to the VBox buttons and combobox
-        buttonVBox.getChildren().addAll(miniHBox, addChooseSchedAlg(), addPriorityCheckBox(), addScheduleButton());
+        buttonVBox.getChildren().addAll(miniHBox, miniHBox2, addChooseSchedAlg(), addPriorityCheckBox(), addScheduleButton());
 
         hbox.getChildren().addAll(buttonVBox, gridDisplay.getDisplay());
 

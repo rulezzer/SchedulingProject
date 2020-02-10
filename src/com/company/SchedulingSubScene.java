@@ -61,8 +61,8 @@ public class SchedulingSubScene extends SubScene {
         root.getChildren().add(grid);
 
         Rectangle rectField2;
-  int i = 0;
-        for (i = processList.get(i).getStartingTime(processList, i); i<processList.get(i).CalculateCompletion(processList, i); i++) {
+
+       /* for (i = processList.get(i).getStartingTime(processList, i); i<processList.get(i).CalculateCompletion(processList, i); i++) {
             System.out.println("Primo FOR");
             for (int j = 1; j <= processList.get(i).CalculateCompletion(processList, i); j++) {
                 System.out.println("Secondo FOR" + j);
@@ -90,13 +90,21 @@ public class SchedulingSubScene extends SubScene {
                 closeNav.setToX(-(rectProcess.getWidth()));
 
             }
-            }
+            }  */
+
+        //int k = processList.indexOf(process);
+for(Process k: processList) {
+    for (int i = processList.get(processList.indexOf(k)).getStartingTime(processList, processList.indexOf(k));
+         i <= processList.get(processList.indexOf(k)).CalculateCompletion(processList, processList.indexOf(k)); i++) {
+
+        System.out.println(i + "o: " + processList.get(processList.indexOf(k)).getStartingTime(processList, processList.indexOf(k)) +
+                " - " + processList.get(processList.indexOf(k)).CalculateCompletion(processList, processList.indexOf(k)));
 
 
-
-
-            StackPane stack = new StackPane();
-            Label processNumber = new Label("P " +(i+1));
+    }
+}
+          /*  StackPane stack = new StackPane();
+            Label processNumber = new Label("P " +(1));
             processNumber.setTextFill(Color.WHITE);
             rectField = new Rectangle(50, TILE_SIZE);
 
@@ -109,7 +117,7 @@ public class SchedulingSubScene extends SubScene {
 
             GridPane.setConstraints(stack, 0, i);
             grid.getChildren().addAll(stack);
-
+*/
 
 
 

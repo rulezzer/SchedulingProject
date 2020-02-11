@@ -9,12 +9,12 @@ public class Process implements ProcessInterface{
     private String id;
     protected Integer arrivalTime;
     protected Integer burst;
-    private Integer completion =0;
+    private Integer completion = 0;
     private Integer turnAround;
     private Integer waitingTime;
     private String type;
     private Integer startingTime;
-    private Integer contextSwitch=1;
+    private Integer contextSwitch;
 
 
 
@@ -25,6 +25,7 @@ public class Process implements ProcessInterface{
 
         this.arrivalTime = setArrivalTime();
         this.burst = setBurst();
+        this.contextSwitch = 1;
     }
 
     private int setArrivalTime(){
@@ -134,6 +135,12 @@ public class Process implements ProcessInterface{
 
         return waitingTime;
     }
+
+
+    public void setContextSwitch(int contextSwitch) {
+        this.contextSwitch = contextSwitch;
+    }
+
 
 
 

@@ -34,7 +34,7 @@ public class SchedulingSubScene extends SubScene {
     private List<Process> processList ;
 
     public SchedulingSubScene(List processList) {
-        super(new AnchorPane(), 800, 800);
+        super(new AnchorPane(), 800, 250);
 
         this.processList = processList;
         createGrid();
@@ -93,6 +93,31 @@ public class SchedulingSubScene extends SubScene {
 
         //int k = processList.indexOf(process);
 for(Process process1: processList) {
+
+    for (int j = 0; j < processList.get(processList.indexOf(process1)).CalculateCompletion(processList, processList.indexOf(process1)); j++){
+        rectProcess = new Rectangle(TILE_SIZE, TILE_SIZE);
+    rectProcess.setStyle("-fx-fill: pink; "); //fai colori random
+    rectProcess.setArcHeight(5);
+    rectProcess.setArcWidth(5);
+    GridPane.setConstraints(rectProcess, j, processList.indexOf(process1));
+    grid.getChildren().addAll(rectProcess);
+
+
+    FadeTransition ft = new FadeTransition(Duration.millis(500), rectProcess);
+    ft.setFromValue(0.25);
+    ft.setToValue(1);
+    ft.play();
+
+    TranslateTransition openNav = new TranslateTransition(Duration.millis(500), rectProcess);
+    openNav.fromXProperty().setValue(-10);
+    openNav.setToX(0);
+
+    openNav.play();
+    TranslateTransition closeNav = new TranslateTransition(new Duration(500), rectProcess);
+
+    closeNav.setToX(-(rectProcess.getWidth()));
+}
+
     for (int i = processList.get(processList.indexOf(process1)).getStartingTime(processList, processList.indexOf(process1));
          i < processList.get(processList.indexOf(process1)).CalculateCompletion(processList, processList.indexOf(process1)); i++) {
 

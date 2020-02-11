@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
@@ -37,11 +38,11 @@ public class ViewManager {
 
         //Function to set an action when text field loses focus
         HBox hbox = addHBox();
+        HBox bottombox = addHBottomBox();
         border.setTop(hbox);
+        border.setBottom(bottombox);
 
-
-        mainScene = new Scene(border,800,800);
-
+        mainScene = new Scene(border,800,500);
 
         mainStage.setScene(mainScene);
 
@@ -100,39 +101,47 @@ public class ViewManager {
 
         //crea celle per settare processi
         private TilePane createElement(int i) {
-
             TilePane tileRect = new TilePane();
             tileRect.setHgap(10);
             tileRect.setVgap(10);
-            tileRect.setMaxWidth(170);
+            tileRect.setMaxWidth(150);
             tileRect.setMinHeight(100);
             tileRect.setStyle("-fx-background-color: F96531; -fx-border-color: FFFFFF; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-radius: 5.0;");
             tileRect.setPadding(new Insets(10, 10, 10, 10));
 
+            Label nproc = new Label("Process "+String.valueOf(i+1));
+            nproc.setTextFill(Color.WHITE);
+            nproc.setAlignment(Pos.BASELINE_CENTER);
 
-            final Spinner<Integer> ATField = new Spinner<>();
+            Label atLabel = new Label("Arrival");
+            atLabel.setTextFill(Color.WHITE);
+
+            final Spinner<Integer> atField = new Spinner<>();
             SpinnerValueFactory<Integer> ff = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 50, processList.get(i).getArrivalTime());
-            ATField.setValueFactory(ff);
-            ATField.setMaxWidth(60);
-
-            ATField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            atField.setValueFactory(ff);
+            atField.setMaxWidth(60);
+            atField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
                 if(!"".equals(newValue))
                     processList.get(i).arrivalTime = Integer.parseInt(newValue);
             });
 
-
-            Label ATLabel = new Label("Arrival");
-            ATLabel.setTextFill(Color.WHITE);
+            HBox atRow = new HBox();
+            atRow.setSpacing(25);
+            atRow.setAlignment(Pos.BASELINE_RIGHT);
+            atRow.getChildren().addAll(atLabel, atField);
 
 
             Label burstLabel = new Label("Burst");
             burstLabel.setTextFill(Color.WHITE);
 
-            Label nproc = new Label("Process "+String.valueOf(i+1));
-            nproc.setTextFill(Color.WHITE);
+            HBox burstRow = new HBox();
+            burstRow.setSpacing(25);
+            burstRow.setAlignment(Pos.BASELINE_RIGHT);
+
+            burstRow.getChildren().addAll(burstLabel, addBurstField(i));
 
 
-            tileRect.getChildren().addAll(nproc, ATLabel, ATField, burstLabel, addBurstField(i));
+            tileRect.getChildren().addAll(nproc, atRow, burstRow);
 
             return tileRect;
         }
@@ -178,6 +187,21 @@ public class ViewManager {
     }
 
 
+    private Spinner addCSField(){
+        var CSField = new Spinner<Integer>();
+        var cc = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4, 1); //first element is equal for all
+        CSField.setValueFactory(cc);
+        CSField.setMaxWidth(60);
+
+        CSField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+
+                for (Process proc : processList) proc.setContextSwitch(Integer.valueOf(newValue));
+        });
+
+        return CSField;
+    }
+
+
 
     private ComboBox addChooseSchedAlg(){
         ObservableList<String> options = FXCollections.observableArrayList(
@@ -194,15 +218,19 @@ public class ViewManager {
     private CheckBox addPriorityCheckBox(){
         CheckBox priorityCheck = new CheckBox("Priority");
         priorityCheck.setTextFill(Color.WHITE);
-        return priorityCheck;
 
+//        priorityCheck.setSelected(true);
+        priorityCheck.setDisable(true);
+
+
+        return priorityCheck;
     }
 
     private void createSchedulingSubScene(){
 
         schedulingSubScene = new SchedulingSubScene(processList);
-        schedulingSubScene.setLayoutY(150);
-        //border.setBottom(schedulingSubScene);
+        schedulingSubScene.setLayoutY(200);
+        schedulingSubScene.setLayoutX(50);
        border.getChildren().add(schedulingSubScene);
 
     }
@@ -213,41 +241,21 @@ public class ViewManager {
         hbox.setPadding(new Insets(15, 12, 15, 12));
         hbox.setSpacing(10);
         hbox.setStyle("-fx-background-color: #336699;");
+        hbox.setEffect(new DropShadow(2d, 0d, +2d, Color.LIGHTGREY));
 
         //per allineare immissione n.processi e bottone Schedule
         VBox buttonVBox = new VBox();
-        buttonVBox.setMaxWidth(170);
+//        buttonVBox.setMaxWidth(150);
         buttonVBox.setMinWidth(150);
 
         HBox miniHBox = new HBox();
+        HBox miniHBox2 = new HBox();
+//        miniHBox.setAlignment(Pos.BASELINE_CENTER);
 
         var numProcessField = new Spinner<Integer>();
-
-        Label ATLabel = new Label("Arrival");
-        ATLabel.setTextFill(Color.WHITE);
-
         var ff = new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 10, 2);
         numProcessField.setValueFactory(ff);
         numProcessField.setMaxWidth(60);
-
-
-
-
-
-        Process process = new Process();
-
-        processList.add(process);
-        addNewProcess();
-
-        // DA OTTIMIZZARE
-        gridDisplay.setColumns(processList.size());
-
-
-        for (Process xxx : processList) {
-            System.out.println("Arrival Time: " + xxx.getArrivalTime());
-
-        }
-
         //Change the process panel's number when I change the spinner's value
         numProcessField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
 
@@ -264,24 +272,58 @@ public class ViewManager {
 
             int index = 0;
             for (Process xxx : processList) {
-
                 System.out.println("Arrival Time: " + xxx.getArrivalTime() + " - Burst Time: " + xxx.getBurst());
-
                 index++;
             }
-
 
         });
 
 
 
 
+
+
+            Process process = new Process();
+
+        processList.add(process);
+        addNewProcess();
+
+        // DA OTTIMIZZARE
+        gridDisplay.setColumns(processList.size());
+
+
+        for (Process xxx : processList) {
+            System.out.println("Arrival Time: " + xxx.getArrivalTime());
+
+        }
+
+
+
+
+
+
         addScheduleButton().setLayoutY(numProcessField.getLayoutY()+100);
 
-        miniHBox.getChildren().addAll(new Label("N. Proc: "), numProcessField);
+        Label ATLabel = new Label("Arrival");
+        miniHBox.setSpacing(10);
+        miniHBox.setAlignment(Pos.BASELINE_RIGHT);
+
+        miniHBox2.setSpacing(10);
+        miniHBox2.setAlignment(Pos.BASELINE_RIGHT);
+
+
+        HBox sAlRow = new HBox();
+        sAlRow.setSpacing(10);
+        sAlRow.setAlignment(Pos.BASELINE_RIGHT);
+
+
+        miniHBox.getChildren().addAll(new Label("N. Proc"), numProcessField);
+        miniHBox2.getChildren().addAll(new Label("CS"), addCSField());
+        sAlRow.getChildren().addAll(new Label("Algorithm"), addChooseSchedAlg());
 
         //add to the VBox buttons and combobox
-        buttonVBox.getChildren().addAll(miniHBox, addChooseSchedAlg(), addPriorityCheckBox(), addScheduleButton());
+        buttonVBox.setSpacing(5);
+        buttonVBox.getChildren().addAll(miniHBox, miniHBox2, sAlRow, addPriorityCheckBox(), addScheduleButton());
 
         hbox.getChildren().addAll(buttonVBox, gridDisplay.getDisplay());
 
@@ -290,7 +332,26 @@ public class ViewManager {
     }
 
 
-    public Stage getMainStage(){
+    public HBox addHBottomBox() {
+        HBox bottombox = new HBox();
+        bottombox.setPadding(new Insets(15, 12, 15, 12));
+
+        bottombox.setSpacing(10);
+        bottombox.setStyle("-fx-background-color: #F9423A;");
+
+        Label completionLabel = new Label("Completion: ");
+        completionLabel.setTextFill(Color.WHITE);
+
+
+
+        bottombox.getChildren().addAll(completionLabel);
+
+        return bottombox;
+
+    }
+
+
+        public Stage getMainStage(){
 
         return mainStage;
     }

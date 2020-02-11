@@ -9,7 +9,7 @@ public class Process implements ProcessInterface{
     private String id;
     protected Integer arrivalTime;
     protected Integer burst;
-    private Integer completion = 0;
+    protected Integer completion = 0;
     private Integer turnAround;
     private Integer waitingTime;
     private String type;
@@ -25,7 +25,7 @@ public class Process implements ProcessInterface{
 
         this.arrivalTime = setArrivalTime();
         this.burst = setBurst();
-        this.contextSwitch = 1;
+//        this.contextSwitch = 3;
     }
 
     private int setArrivalTime(){

@@ -95,6 +95,8 @@ public class Process implements ProcessInterface{
         this.burst = burst;
     }
 
+
+
     protected Integer CalculateCompletion(List<Process> processList, int index){
 
         if (index == 0){

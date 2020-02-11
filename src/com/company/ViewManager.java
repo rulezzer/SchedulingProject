@@ -62,8 +62,6 @@ public class ViewManager {
         // The first position (0) is for the "original", the clones follows
         Process clonedProcess = (Process) processMaker.getClone(proces);
 
-
-
         processList.add(clonedProcess);
 
     }
@@ -184,17 +182,20 @@ public class ViewManager {
 
 
 
+
         scheduleButton.setOnAction((event) -> {
             System.out.println(java.util.List.of(processList)); //prin
 
             for (Process proc : processList)proc.setContextSwitch(1);
+            //if (addChooseSchedAlg().getValue() == "FCFS")
+
             al.schedule(processList);
 
-            //for(Process proc: processList) System.out.println("id: " +proc.getIdProc());
 
             createSchedulingSubScene();
+//            System.out.println(processList.get(processList.size() - 1).completion);
             completionLabel.setText("Completion Time: "+ processList.get(processList.size() - 1).completion);
-
+            turnaroundLabel.setText("|  Turnaround: "+ processList.get(processList.size()-1).CalculateTurnaroundTime(processList, processList.size()-1));
         });
 
         return scheduleButton;
@@ -259,7 +260,7 @@ public class ViewManager {
 
         //per allineare immissione n.processi e bottone Schedule
         VBox buttonVBox = new VBox();
-        buttonVBox.setMinWidth(150);
+        buttonVBox.setMinWidth(135);
 
         HBox miniHBox = new HBox();
         HBox miniHBox2 = new HBox();
@@ -272,16 +273,11 @@ public class ViewManager {
         //Change the process panel's number when I change the spinner's value
         numProcessField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
 
-            if(Integer.parseInt(newValue) > Integer.parseInt(oldValue)) {
+            if(Integer.parseInt(newValue) > Integer.parseInt(oldValue))
                 //create processes when I change
                 addNewProcess();
-
-            }
-
-            else {
-                processList.remove(processList.size() - 1);
-
-            }
+            else
+                processList.remove(processList.size()-1);
 
             System.out.println(java.util.List.of(processList));
             gridDisplay.setColumns(processList.size());
@@ -351,10 +347,13 @@ public class ViewManager {
 
 
     Label completionLabel = new Label();
+    Label turnaroundLabel = new Label();
 
     public HBox addHBottomBox() {
         HBox bottombox = new HBox();
         bottombox.setPadding(new Insets(15, 12, 15, 12));
+        bottombox.setEffect(new DropShadow(-2d, 0d, +2d, Color.GREY));
+
 
         bottombox.setSpacing(10);
         bottombox.setStyle("-fx-background-color: #F9423A;");
@@ -362,8 +361,10 @@ public class ViewManager {
          completionLabel.setTextFill(Color.WHITE);
 
 
-         completionLabel.setText("hhhh");
-        bottombox.getChildren().addAll(completionLabel);
+         completionLabel.setText("Made by Gennaro Caccavale, Davide Cangiano, Ivan Cifariello with ❤");
+
+         turnaroundLabel.setTextFill(Color.WHITE);
+        bottombox.getChildren().addAll(completionLabel, turnaroundLabel);
 
         return bottombox;
 

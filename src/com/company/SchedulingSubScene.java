@@ -3,6 +3,7 @@ package com.company;
 import javafx.animation.FadeTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.geometry.Pos;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,6 +15,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.net.CookieHandler;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,7 +37,7 @@ public class SchedulingSubScene extends SubScene {
     private List<Process> processList ;
 
     public SchedulingSubScene(List processList) {
-        super(new AnchorPane(), 800, 250);
+        super(new AnchorPane(), 900, 250);
 
         this.processList = processList;
         createGrid();
@@ -52,64 +54,20 @@ public class SchedulingSubScene extends SubScene {
         System.out.println(n_col);
 
         grid = new GridPane();
-        Rectangle rectField;
         Rectangle rectProcess;
 
 
 
         root.getChildren().add(grid);
 
-        Rectangle rectField2;
-
-       /* for (i = processList.get(i).getStartingTime(processList, i); i<processList.get(i).CalculateCompletion(processList, i); i++) {
-            System.out.println("Primo FOR");
-            for (int j = 1; j <= processList.get(i).CalculateCompletion(processList, i); j++) {
-                System.out.println("Secondo FOR" + j);
-                rectProcess = new Rectangle(TILE_SIZE, TILE_SIZE);
-
-                rectProcess.setStyle("-fx-fill: #00AB84; "); //fai colori random
-                rectProcess.setArcHeight(5);
-                rectProcess.setArcWidth(5);
-                GridPane.setConstraints(rectProcess, j, i);
-                grid.getChildren().addAll(rectProcess);
 
 
-                FadeTransition ft = new FadeTransition(Duration.millis(500), rectProcess);
-                ft.setFromValue(0.25);
-                ft.setToValue(1);
-                ft.play();
-
-                TranslateTransition openNav = new TranslateTransition(Duration.millis(500), rectProcess);
-                openNav.fromXProperty().setValue(-10);
-                openNav.setToX(0);
-
-                openNav.play();
-                TranslateTransition closeNav = new TranslateTransition(new Duration(500), rectProcess);
-
-                closeNav.setToX(-(rectProcess.getWidth()));
-
-            }
-            }  */
-
-        //int k = processList.indexOf(process);
+for(Process process: processList) {
 
 
 
-for(Process process : processList) {
 
     //richiamare ordimamemto per arrival
-
-//    StackPane stack = new StackPane();
-//    Label processNumber = new Label("P "+  (processList.indexOf(process1)+(1)));
-//    processNumber.setTextFill(Color.WHITE);
-//    rectField = new Rectangle(50, TILE_SIZE);
-//    rectField.setStyle("-fx-fill: F96231; -fx-stroke: FFFFFF; -fx-stroke-width: 1;");
-//
-//    stack.getChildren().addAll(rectField, processNumber);
-//
-//    GridPane.setConstraints(stack,0, processList.indexOf(process1));
-//    grid.getChildren().addAll(stack);
-
 
     for (int j = 0; j < processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process)); j++){
         rectProcess = new Rectangle(TILE_SIZE, TILE_SIZE);
@@ -160,7 +118,7 @@ for(Process process : processList) {
         openNav.setToX(0);
 
         openNav.play();
-        TranslateTransition closeNav = new TranslateTransition(new Duration(500), rectProcess);
+        TranslateTransition closeNav = new TranslateTransition(new Duration(1000), rectProcess);
 
         closeNav.setToX(-(rectProcess.getWidth()));
 
@@ -168,6 +126,37 @@ for(Process process : processList) {
     }
 
 
+    for(int i=0; i<processList.get(processList.size()-1).completion; i++){
+        if (i%5==0) {
+            Label timeline = new Label(String.valueOf(i));
+            timeline.setAlignment(Pos.CENTER);
+            GridPane.setConstraints(timeline, i, processList.size() + 1);
+
+
+            FadeTransition ft = new FadeTransition(Duration.millis(1500), timeline);
+            ft.setFromValue(0);
+            ft.setToValue(1);
+            ft.play();
+
+            grid.getChildren().addAll(timeline);
+
+        }
+    }
+
+            StackPane stack = new StackPane();
+            Label processNumber = new Label("P " +(1));
+            processNumber.setTextFill(Color.WHITE);
+//            rectField = new Rectangle(50, TILE_SIZE);
+
+            stack.getChildren().addAll( processNumber);
+
+//            rectField.setStyle("-fx-fill: F96231; -fx-stroke: FFFFFF; -fx-stroke-width: 1;");
+
+
+
+
+            GridPane.setConstraints(stack, 0, processList.indexOf(process));
+            grid.getChildren().addAll(stack);
 
 }
           /*  StackPane stack = new StackPane();

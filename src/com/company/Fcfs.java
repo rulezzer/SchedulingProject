@@ -1,5 +1,6 @@
 package com.company;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class Fcfs implements SchedulingStrategy {
@@ -7,15 +8,15 @@ public class Fcfs implements SchedulingStrategy {
     public void schedule(List<Process> processList) {
 
 
-        int temp;
-        for (int i = 0; i < processList.size(); i++) {
+        //int temp;
+       /* for (int i = 0; i < processList.size(); i++) {
 
 
             for (int j = 0; j < processList.size() - (i + 1); j++) {
                 if (processList.get(j).arrivalTime > processList.get(j + 1).arrivalTime) {
 
                     temp = processList.get(j).arrivalTime;
-                    processList.get(j).arrivalTime = processList.get(j + 1).getArrivalTime();
+                    processList.get(j).arrivalTime = processList.get(j + 1).arrivalTime;
                     processList.get(j + 1).arrivalTime = temp;
 
                     temp = processList.get(j).burst;
@@ -23,12 +24,18 @@ public class Fcfs implements SchedulingStrategy {
                     processList.get(j + 1).burst = temp;
 
 
+
+
+
                 }
             }
 
 
 
-        }
+        }*/
+       processList.sort(Comparator.comparing(Process::getArrivalTime));
+
+
 
         System.out.println("***** Stampa ordinata *****");
         for (int i = 0; i < processList.size() ; i++) {

@@ -6,15 +6,18 @@ import java.util.List;
 import java.util.Random;
 
 public class Process implements ProcessInterface{
-    private String id;
+    private Integer idProc;
+    private static int lastAssignedId = 0;
     protected Integer arrivalTime;
     protected Integer burst;
-    private Integer completion = 0;
+    protected Integer completion;
     private Integer turnAround;
     private Integer waitingTime;
     private String type;
     private Integer startingTime;
     private Integer contextSwitch;
+
+    private List<Process> state;
 
 
 
@@ -25,7 +28,20 @@ public class Process implements ProcessInterface{
 
         this.arrivalTime = setArrivalTime();
         this.burst = setBurst();
-        this.contextSwitch = 1;
+        lastAssignedId++;
+        idProc = lastAssignedId;
+
+//  this.contextSwitch = 3;
+    }
+
+
+
+    public void setMememento(Memento m){
+        state = m.getState();
+
+    }
+    public Memento createMemento(){
+        return new Memento();
     }
 
     private int setArrivalTime(){
@@ -75,11 +91,9 @@ public class Process implements ProcessInterface{
         return burst;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setBurst(Integer burst) {
+        this.burst = burst;
     }
-
-
 
     protected Integer CalculateCompletion(List<Process> processList, int index){
 
@@ -142,6 +156,14 @@ public class Process implements ProcessInterface{
     }
 
 
+    public void setIdProc(Integer idProc) {
 
 
+     this.idProc = idProc;
+    }
+
+    public Integer getIdProc() {
+
+        return idProc;
+    }
 }

@@ -31,6 +31,7 @@ public class SchedulingSubScene extends SubScene {
 
     private GridPane grid;
 
+
     private List<Process> processList ;
 
     public SchedulingSubScene(List processList) {
@@ -46,7 +47,6 @@ public class SchedulingSubScene extends SubScene {
 
 
 
-        Process process = new Process();
 
         int n_col = processList.size();
         System.out.println(n_col);
@@ -92,14 +92,31 @@ public class SchedulingSubScene extends SubScene {
             }  */
 
         //int k = processList.indexOf(process);
-for(Process process1: processList) {
 
-    for (int j = 0; j < processList.get(processList.indexOf(process1)).CalculateCompletion(processList, processList.indexOf(process1)); j++){
+
+
+for(Process process : processList) {
+
+    //richiamare ordimamemto per arrival
+
+//    StackPane stack = new StackPane();
+//    Label processNumber = new Label("P "+  (processList.indexOf(process1)+(1)));
+//    processNumber.setTextFill(Color.WHITE);
+//    rectField = new Rectangle(50, TILE_SIZE);
+//    rectField.setStyle("-fx-fill: F96231; -fx-stroke: FFFFFF; -fx-stroke-width: 1;");
+//
+//    stack.getChildren().addAll(rectField, processNumber);
+//
+//    GridPane.setConstraints(stack,0, processList.indexOf(process1));
+//    grid.getChildren().addAll(stack);
+
+
+    for (int j = 0; j < processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process)); j++){
         rectProcess = new Rectangle(TILE_SIZE, TILE_SIZE);
     rectProcess.setStyle("-fx-fill: pink; "); //fai colori random
     rectProcess.setArcHeight(5);
     rectProcess.setArcWidth(5);
-    GridPane.setConstraints(rectProcess, j, processList.indexOf(process1));
+    GridPane.setConstraints(rectProcess, j, process.getIdProc());
     grid.getChildren().addAll(rectProcess);
 
 
@@ -118,8 +135,8 @@ for(Process process1: processList) {
     closeNav.setToX(-(rectProcess.getWidth()));
 }
 
-    for (int i = processList.get(processList.indexOf(process1)).getStartingTime(processList, processList.indexOf(process1));
-         i < processList.get(processList.indexOf(process1)).CalculateCompletion(processList, processList.indexOf(process1)); i++) {
+    for (int j = processList.get(processList.indexOf(process)).getStartingTime(processList, processList.indexOf(process));
+         j < processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process)); j++) {
 
         //System.out.println(i + "o: " + processList.get(processList.indexOf(k)).getStartingTime(processList, processList.indexOf(k)) +
                 //" - " + processList.get(processList.indexOf(k)).CalculateCompletion(processList, processList.indexOf(k)));
@@ -129,7 +146,7 @@ for(Process process1: processList) {
         rectProcess.setStyle("-fx-fill: #00AB84; "); //fai colori random
         rectProcess.setArcHeight(5);
         rectProcess.setArcWidth(5);
-        GridPane.setConstraints(rectProcess,i, processList.indexOf(process1));
+        GridPane.setConstraints(rectProcess,j, process.getIdProc());
         grid.getChildren().addAll(rectProcess);
 
 
@@ -149,6 +166,9 @@ for(Process process1: processList) {
 
 
     }
+
+
+
 }
           /*  StackPane stack = new StackPane();
             Label processNumber = new Label("P " +(1));

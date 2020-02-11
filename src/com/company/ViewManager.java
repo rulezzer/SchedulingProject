@@ -27,6 +27,10 @@ public class ViewManager {
 
     public List<Process> processList = new ArrayList<>();
 
+
+    Memento memento = new Memento();
+    Fcfs al = new Fcfs();
+
     public ViewManager(){
 
         mainStage = new Stage();
@@ -57,6 +61,8 @@ public class ViewManager {
         Process proces = new Process();
         // The first position (0) is for the "original", the clones follows
         Process clonedProcess = (Process) processMaker.getClone(proces);
+
+
 
         processList.add(clonedProcess);
 
@@ -156,7 +162,6 @@ public class ViewManager {
         var burstFieldValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, processList.get(i).getBurst());
         burstField.setValueFactory(burstFieldValue);
 
-//        burstField.setAlignment(Pos.CENTER_RIGHT);
         burstField.setMaxWidth(60);
         burstField.setLayoutX(100);
 
@@ -175,12 +180,21 @@ public class ViewManager {
         Button scheduleButton = new Button("Schedule");
         scheduleButton.setPrefSize(100, 20);
         scheduleButton.setAlignment(Pos.CENTER);
-        Fcfs al = new Fcfs();
+
+
+
 
         scheduleButton.setOnAction((event) -> {
             System.out.println(java.util.List.of(processList)); //prin
-          al.schedule(processList);
+
+            for (Process proc : processList)proc.setContextSwitch(1);
+            al.schedule(processList);
+
+            //for(Process proc: processList) System.out.println("id: " +proc.getIdProc());
+
             createSchedulingSubScene();
+            completionLabel.setText("Completion Time: "+ processList.get(processList.size() - 1).completion);
+
         });
 
         return scheduleButton;
@@ -245,7 +259,6 @@ public class ViewManager {
 
         //per allineare immissione n.processi e bottone Schedule
         VBox buttonVBox = new VBox();
-//        buttonVBox.setMaxWidth(150);
         buttonVBox.setMinWidth(150);
 
         HBox miniHBox = new HBox();
@@ -259,11 +272,16 @@ public class ViewManager {
         //Change the process panel's number when I change the spinner's value
         numProcessField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
 
-            if(Integer.parseInt(newValue) > Integer.parseInt(oldValue))
+            if(Integer.parseInt(newValue) > Integer.parseInt(oldValue)) {
                 //create processes when I change
                 addNewProcess();
-            else
-                processList.remove(processList.size()-1);
+
+            }
+
+            else {
+                processList.remove(processList.size() - 1);
+
+            }
 
             System.out.println(java.util.List.of(processList));
             gridDisplay.setColumns(processList.size());
@@ -332,6 +350,8 @@ public class ViewManager {
     }
 
 
+    Label completionLabel = new Label();
+
     public HBox addHBottomBox() {
         HBox bottombox = new HBox();
         bottombox.setPadding(new Insets(15, 12, 15, 12));
@@ -339,11 +359,10 @@ public class ViewManager {
         bottombox.setSpacing(10);
         bottombox.setStyle("-fx-background-color: #F9423A;");
 
-        Label completionLabel = new Label("Completion: ");
-        completionLabel.setTextFill(Color.WHITE);
+         completionLabel.setTextFill(Color.WHITE);
 
 
-
+         completionLabel.setText("hhhh");
         bottombox.getChildren().addAll(completionLabel);
 
         return bottombox;

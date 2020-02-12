@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -78,7 +79,6 @@ public class ViewManager {
 
         private TilePane tilePane = new TilePane();
         private Group display = new Group(tilePane);
-//        private int[] nCols[];
 
         public GridDisplay(int processNum) {
             tilePane.setStyle("-fx-background-color: rgba(255, 215, 0, 0);");
@@ -114,6 +114,8 @@ public class ViewManager {
             tileRect.setPadding(new Insets(10, 10, 10, 10));
 
             Label nproc = new Label("Process "+String.valueOf(i+1));
+//            nproc.fontProperty(FontWeight.BOLD);
+            nproc.setStyle("-fx-font-weight: bold");
             nproc.setTextFill(Color.WHITE);
             nproc.setAlignment(Pos.BASELINE_CENTER);
 
@@ -246,7 +248,7 @@ public class ViewManager {
         schedulingSubScene = new SchedulingSubScene(processList);
         schedulingSubScene.setLayoutY(200);
         schedulingSubScene.setLayoutX(50);
-       border.getChildren().add(schedulingSubScene);
+        border.getChildren().add(schedulingSubScene);
 
     }
 
@@ -295,8 +297,6 @@ public class ViewManager {
 
 
 
-
-
             Process process = new Process();
 
         processList.add(process);
@@ -315,10 +315,8 @@ public class ViewManager {
 
 
 
-
         addScheduleButton().setLayoutY(numProcessField.getLayoutY()+100);
 
-        Label ATLabel = new Label("Arrival");
         miniHBox.setSpacing(10);
         miniHBox.setAlignment(Pos.BASELINE_RIGHT);
 
@@ -372,7 +370,6 @@ public class ViewManager {
 
 
         public Stage getMainStage(){
-
         return mainStage;
     }
 

@@ -17,6 +17,7 @@ public class Main extends Application {
             primaryStage.setTitle("CSAS - CPU Scheduling Algorithm Simulator");
             primaryStage.show();
 
+
         } catch(Exception e) {
 
             e.printStackTrace();

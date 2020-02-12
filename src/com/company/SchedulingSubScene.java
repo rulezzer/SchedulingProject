@@ -17,10 +17,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.net.CookieHandler;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class SchedulingSubScene extends SubScene {
 
@@ -34,16 +31,18 @@ public class SchedulingSubScene extends SubScene {
 
     private GridPane grid;
     private GridPane processColumn;
+    private GridPane timelineGrid;
 
     private List<Process> processList;
 
     public SchedulingSubScene(List processList) {
-        super(new AnchorPane(), 900, 250);
+        super(new AnchorPane(), 1000, 250);
 
         this.processList = processList;
 
         createGrid();
         createProcessColumn();
+        createTimeline();
 
     }
 
@@ -63,13 +62,12 @@ public class SchedulingSubScene extends SubScene {
             processNumber.setTextFill(Color.WHITE);
 
 
-
-            var xx = rectUnit.makeRect(1,2,"ccc", Color.BLACK);
+            var xx = rectUnit.makeRect(1, 2, "ccc", Color.BLACK);
 
 
             Rectangle rectField = new Rectangle(50, TILE_SIZE);
 
-            stack.getChildren().addAll(rectField, processNumber, rectUnit.makeRect(10,20,"ccc", Color.BLACK));
+            stack.getChildren().addAll(rectField, processNumber, rectUnit.makeRect(10, 20, "ccc", Color.BLACK));
 
             rectField.setStyle("-fx-fill: F96231; -fx-stroke: FFFFFF; -fx-stroke-width: 1; -fx-stroke-type: inside; ");
 
@@ -86,14 +84,12 @@ public class SchedulingSubScene extends SubScene {
 
     public GridPane createGrid() {
 
-
         grid = new GridPane();
         grid.setLayoutX(50);
         Rectangle rectProcess;
 
 
         root.getChildren().add(grid);
-
 
         for (Process process : processList) {
 
@@ -122,6 +118,35 @@ public class SchedulingSubScene extends SubScene {
                 TranslateTransition closeNav = new TranslateTransition(new Duration(500), rectProcess);
 
                 closeNav.setToX(-(rectProcess.getWidth()));
+            }
+
+            System.out.println(process.getContextSwitch() + "contex");
+
+            for (int j = (processList.get(processList.indexOf(process)).getStartingTime(processList, processList.indexOf(process)) - process.getContextSwitch()); j < processList.get(processList.indexOf(process)).getStartingTime(processList, processList.indexOf(process)); j++) {
+
+                if (processList.indexOf(process) != 0) {
+                    rectProcess = new Rectangle(TILE_SIZE, TILE_SIZE);
+                    rectProcess.setStyle("-fx-fill: Grey; "); //fai colori random
+                    rectProcess.setArcHeight(5);
+                    rectProcess.setArcWidth(5);
+                    GridPane.setConstraints(rectProcess, j, process.getIdProc());
+                    grid.getChildren().addAll(rectProcess);
+
+
+                    FadeTransition ft = new FadeTransition(Duration.millis(500), rectProcess);
+                    ft.setFromValue(0.25);
+                    ft.setToValue(1);
+                    ft.play();
+
+                    TranslateTransition openNav = new TranslateTransition(Duration.millis(500), rectProcess);
+                    openNav.fromXProperty().setValue(-10);
+                    openNav.setToX(0);
+
+                    openNav.play();
+                    TranslateTransition closeNav = new TranslateTransition(new Duration(1000), rectProcess);
+
+                    closeNav.setToX(-(rectProcess.getWidth()));
+                }
             }
 
             for (int j = processList.get(processList.indexOf(process)).getStartingTime(processList, processList.indexOf(process));
@@ -154,30 +179,44 @@ public class SchedulingSubScene extends SubScene {
             }
 
 
-            for (int i = 0; i < processList.get(processList.size() - 1).completion; i++) {
-                if (i % 5 == 0) {
-                    Label timeline = new Label(String.valueOf(i));
+        }
+        processList.sort(Comparator.comparing(Process::getIdProc));
+        return grid;
+
+    }
+
+    public GridPane createTimeline() {
+
+        timelineGrid = new GridPane();
+
+        root.getChildren().add(timelineGrid);
+
+
+        int maxcompl = 0;
+        for (Process proc : processList) {
+            if (maxcompl < proc.completion)
+                maxcompl = proc.completion;
+        }
+        for (int i = 0; i < maxcompl; i++) {
+            if (i % 5 == 0) {
+                Label timeline = new Label(String.valueOf(i));
 //                    timeline.setAlignment(Pos.CENTER);
-                    GridPane.setConstraints(timeline, i, (processList.size() + 1));
+                GridPane.setConstraints(timeline, i, (processList.size() + 1));
 
-                    System.out.println("processList size + 1:   "+ (processList.size() + 1));
+                System.out.println("processList size + 1:   " + (processList.size() + 1));
 
-                    FadeTransition ft = new FadeTransition(Duration.millis(1500), timeline);
-                    ft.setFromValue(0);
-                    ft.setToValue(1);
-                    ft.play();
+                FadeTransition ft = new FadeTransition(Duration.millis(1500), timeline);
+                ft.setFromValue(0);
+                ft.setToValue(1);
+                ft.play();
 
-                    grid.getChildren().add(timeline);
+                grid.getChildren().add(timeline);
 
-                }
             }
-
-
         }
 
 
-        return grid;
-
+        return timelineGrid;
     }
 
 }

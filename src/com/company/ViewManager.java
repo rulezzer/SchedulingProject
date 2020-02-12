@@ -122,19 +122,11 @@ public class ViewManager {
             Label atLabel = new Label("Arrival");
             atLabel.setTextFill(Color.WHITE);
 
-            final Spinner<Integer> atField = new Spinner<>();
-            SpinnerValueFactory<Integer> ff = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 50, processList.get(i).getArrivalTime());
-            atField.setValueFactory(ff);
-            atField.setMaxWidth(60);
-            atField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
-                if(!"".equals(newValue))
-                    processList.get(i).arrivalTime = Integer.parseInt(newValue);
-            });
 
             HBox atRow = new HBox();
             atRow.setSpacing(25);
             atRow.setAlignment(Pos.BASELINE_RIGHT);
-            atRow.getChildren().addAll(atLabel, atField);
+            atRow.getChildren().addAll(atLabel, addATField(i));
 
 
             Label burstLabel = new Label("Burst");
@@ -146,7 +138,7 @@ public class ViewManager {
 
             burstRow.getChildren().addAll(burstLabel, addBurstField(i));
 
-
+//            System.out.println(processList.get(i).getIdProc);
             tileRect.getChildren().addAll(nproc, atRow, burstRow);
 
             return tileRect;
@@ -155,6 +147,20 @@ public class ViewManager {
     }
 
 
+    private Spinner addATField(int i ){
+
+        final Spinner<Integer> atField = new Spinner<>();
+        SpinnerValueFactory<Integer> ff = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 50, processList.get(i).getArrivalTime());
+        atField.setValueFactory(ff);
+        atField.setMaxWidth(60);
+        atField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            if(!"".equals(newValue))
+                processList.get(processList.get(i).getIdProc()).setArrivalTime(Integer.parseInt(newValue), processList, i);
+        });
+
+
+        return atField;
+    }
 
     private Spinner addBurstField(int i){
 
@@ -167,9 +173,21 @@ public class ViewManager {
 
 
         burstField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
-            if(!"".equals(newValue))
-                processList.get(i).burst = Integer.parseInt(newValue);
 
+            System.out.println("prima burst="+processList.get(i).getBurst());
+            System.out.println("arrivatimne="+processList.get(i).getArrivalTime());
+            System.out.println("Completion="+processList.get(i).completion);
+
+
+
+            if(!"".equals(newValue))
+                processList.get(i).setBurst(Integer.parseInt(newValue), processList, i);
+
+            System.out.println("indice "+ i);
+            System.out.println("dopo burst="+processList.get(i).getBurst());
+            System.out.println("arrivatimne="+processList.get(i).getArrivalTime());
+
+            System.out.println("Completion="+processList.get(i).completion);
         });
 
         return burstField;
@@ -183,14 +201,14 @@ public class ViewManager {
 
 
 
-
+        for (Process proc : processList) proc.setContextSwitch(1);
 
         scheduleButton.setOnAction((event) -> {
             System.out.println(java.util.List.of(processList)); //prin
 
-            for (Process proc : processList)proc.setContextSwitch(1);
+//            for (Process proc : processList) proc.setContextSwitch(1);
             //if (addChooseSchedAlg().getValue() == "FCFS")
-
+            for (Process proc : processList) proc.setContextSwitch(processList.get(0).getContextSwitch());
             al.schedule(processList);
 
 
@@ -206,7 +224,7 @@ public class ViewManager {
 
     private Spinner addCSField(){
         var CSField = new Spinner<Integer>();
-        var cc = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4, 1); //first element is equal for all
+        var cc = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 2, 1); //first element is equal for all
         CSField.setValueFactory(cc);
         CSField.setMaxWidth(60);
 
@@ -227,6 +245,12 @@ public class ViewManager {
         );
         final ComboBox comboBox = new ComboBox(options);
         comboBox.getSelectionModel().selectFirst();
+
+        if(comboBox.getValue() == "FCFS") {
+
+        } else if (comboBox.getValue() == "SJF") {
+
+        }
 
         return comboBox;
     }
@@ -275,9 +299,11 @@ public class ViewManager {
         //Change the process panel's number when I change the spinner's value
         numProcessField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
 
-            if(Integer.parseInt(newValue) > Integer.parseInt(oldValue))
+            if(Integer.parseInt(newValue) > Integer.parseInt(oldValue)) {
+
                 //create processes when I change
                 addNewProcess();
+            }
             else
                 processList.remove(processList.size()-1);
 

@@ -15,7 +15,7 @@ public class Process implements ProcessInterface{
     private Integer waitingTime;
     private String type;
     private Integer startingTime;
-    private Integer contextSwitch;
+    private int contextSwitch;
 
     private List<Process> state;
 
@@ -28,8 +28,11 @@ public class Process implements ProcessInterface{
 
         this.arrivalTime = setArrivalTime();
         this.burst = setBurst();
-        lastAssignedId++;
+        System.out.println("id prima " + idProc);
         idProc = lastAssignedId;
+        lastAssignedId++;
+        System.out.println("id dopo " + idProc);
+
 
 //  this.contextSwitch = 3;
     }
@@ -91,9 +94,15 @@ public class Process implements ProcessInterface{
         return burst;
     }
 
-    public void setBurst(Integer burst) {
-        this.burst = burst;
+    public void setBurst(Integer burst, List<Process> processList, int index) {
+        processList.get(index).burst = burst;
     }
+    public void setArrivalTime(Integer at, List<Process> processList, int index){
+        processList.get(index).arrivalTime=at;
+
+
+    }
+
 
 
 
@@ -119,16 +128,20 @@ public class Process implements ProcessInterface{
 
         if(index == 0){
             processList.get(index).startingTime = processList.get(index).arrivalTime;
-        }else
-        {   if(processList.get(index).arrivalTime > processList.get(index-1).completion){
-              if(processList.get(index-1).startingTime + processList.get(index-1).contextSwitch > processList.get(index).arrivalTime) {
-                  processList.get(index).startingTime = processList.get(index - 1).startingTime + processList.get(index - 1).completion + processList.get(index - 1).contextSwitch;
-              }else {
+        }else {
+            if(processList.get(index).arrivalTime > processList.get(index-1).completion)
+        {
+              if(processList.get(index-1).startingTime + processList.get(index-1).contextSwitch > processList.get(index).arrivalTime)
+              {
+                  processList.get(index).startingTime = processList.get(index - 1).startingTime +
+                          processList.get(index - 1).completion + processList.get(index - 1).contextSwitch;
+              }else
+                  {
                   processList.get(index).startingTime = processList.get(index).arrivalTime;
               }
 
         }else
-            processList.get(index).startingTime =  processList.get(index-1).completion + processList.get(index).contextSwitch;
+            processList.get(index).startingTime =  processList.get(index-1).completion + processList.get(index-1).contextSwitch;
         }
 
         return startingTime;
@@ -155,6 +168,10 @@ public class Process implements ProcessInterface{
 
     public void setContextSwitch(int contextSwitch) {
         this.contextSwitch = contextSwitch;
+    }
+
+    public int getContextSwitch(){
+        return contextSwitch;
     }
 
 

@@ -6,15 +6,13 @@ import javafx.scene.shape.Rectangle;
 public class RectType extends Rectangle {
 
     private String name;
-    private Color color;
-    private String otherTreeData;
+    private String style;
 
-    public RectType(String name, Color color) {
+    public RectType(String name, String style) {
         this.name = name;
-        this.color = color;
-        this.setArcHeight(15);
-        this.setArcWidth(15);
-
+        this.setArcHeight(50);
+        this.setArcWidth(50);
+        this.setStyle(style);
     }
 
 //    public void draw(Graphics g, int x, int y) {

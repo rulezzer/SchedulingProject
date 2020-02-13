@@ -8,14 +8,17 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +30,19 @@ public class ViewManager {
     protected BorderPane border = new BorderPane();
 
     public List<Process> processList = new ArrayList<>();
-
+    private int contextSwitch = 1;
+    private Schedule schedule = new Schedule();
 
     Memento memento = new Memento();
-    Fcfs al = new Fcfs();
 
-    public ViewManager(){
+    ObservableList<String> options = FXCollections.observableArrayList(
+            "FCFS", "SJF"
+    );
+
+    final ComboBox<String> comboBox = new ComboBox<>(options);
+
+
+    public ViewManager() throws FileNotFoundException {
 
         mainStage = new Stage();
 
@@ -47,12 +57,34 @@ public class ViewManager {
         border.setTop(hbox);
         border.setBottom(bottombox);
 
-        mainScene = new Scene(border,800,500);
+        mainScene = new Scene(border, 800, 500);
 
         mainStage.setScene(mainScene);
 
-    }
+        final ImageView selectedImage = new ImageView();
+        Image image1 = new Image(new FileInputStream("src/com/company/resources/accelerated-order.png"));
 
+        selectedImage.setImage(image1);
+
+        selectedImage.setScaleX(0.35);
+        selectedImage.setScaleY(0.35);
+//        selectedImage.setLayoutX(mainScene.getWidth()/2+selectedImage.getFitWidth());
+//        selectedImage.setLayoutY(mainScene.getHeight()/2+selectedImage.getFitHeight());
+
+//        selectedImage.layoutXProperty().bind(mainScene.widthProperty().subtract(selectedImage.fitWidthProperty()).divide(8));
+//        selectedImage.layoutYProperty().bind(mainScene.heightProperty().subtract(selectedImage.fitHeightProperty()).divide(5).subtract(hbox.getHeight()));
+
+        HBox himagebox = new HBox();
+        himagebox.getChildren().add(selectedImage);
+//        border.setCenter(himagebox);
+
+
+//        mainScene.getChildren().add(selectedImage);
+        himagebox.setMaxHeight(mainScene.getHeight());
+        BorderPane.setAlignment(himagebox, Pos.TOP_CENTER);
+
+
+    }
 
 
     private void addNewProcess() {
@@ -113,7 +145,7 @@ public class ViewManager {
             tileRect.setStyle("-fx-background-color: F96531; -fx-border-color: FFFFFF; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-radius: 5.0;");
             tileRect.setPadding(new Insets(10, 10, 10, 10));
 
-            Label nproc = new Label("Process "+String.valueOf(i+1));
+            Label nproc = new Label("Process " + String.valueOf(i + 1));
 //            nproc.fontProperty(FontWeight.BOLD);
             nproc.setStyle("-fx-font-weight: bold");
             nproc.setTextFill(Color.WHITE);
@@ -147,22 +179,21 @@ public class ViewManager {
     }
 
 
-    private Spinner addATField(int i ){
+    private Spinner addATField(int i) {
 
         final Spinner<Integer> atField = new Spinner<>();
         SpinnerValueFactory<Integer> ff = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 50, processList.get(i).getArrivalTime());
         atField.setValueFactory(ff);
         atField.setMaxWidth(60);
         atField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
-            if(!"".equals(newValue))
+            if (!"".equals(newValue))
                 processList.get(processList.get(i).getIdProc()).setArrivalTime(Integer.parseInt(newValue), processList, i);
         });
-
 
         return atField;
     }
 
-    private Spinner addBurstField(int i){
+    private Spinner addBurstField(int i) {
 
         var burstField = new Spinner<Integer>(); //vedere se per cambiare il range posso cambbiare solo una sola parte
         var burstFieldValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, processList.get(i).getBurst());
@@ -174,63 +205,72 @@ public class ViewManager {
 
         burstField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
 
-            System.out.println("prima burst="+processList.get(i).getBurst());
-            System.out.println("arrivatimne="+processList.get(i).getArrivalTime());
-            System.out.println("Completion="+processList.get(i).completion);
+            System.out.println("prima burst=" + processList.get(i).getBurst());
+            System.out.println("arrivatimne=" + processList.get(i).getArrivalTime());
+            System.out.println("Completion=" + processList.get(i).completion);
 
 
-
-            if(!"".equals(newValue))
+            if (!"".equals(newValue))
                 processList.get(i).setBurst(Integer.parseInt(newValue), processList, i);
 
-            System.out.println("indice "+ i);
-            System.out.println("dopo burst="+processList.get(i).getBurst());
-            System.out.println("arrivatimne="+processList.get(i).getArrivalTime());
+            System.out.println("indice " + i);
+            System.out.println("dopo burst=" + processList.get(i).getBurst());
+            System.out.println("arrivatimne=" + processList.get(i).getArrivalTime());
 
-            System.out.println("Completion="+processList.get(i).completion);
+            System.out.println("Completion=" + processList.get(i).completion);
         });
 
         return burstField;
     }
 
-    private Button addScheduleButton(){
+    private Button addScheduleButton() {
 
         Button scheduleButton = new Button("Schedule");
         scheduleButton.setPrefSize(100, 20);
         scheduleButton.setAlignment(Pos.CENTER);
-
-
-
-        for (Process proc : processList) proc.setContextSwitch(1);
+        comboBox.getSelectionModel().selectFirst();
 
         scheduleButton.setOnAction((event) -> {
-            System.out.println(java.util.List.of(processList)); //prin
+            System.out.println(java.util.List.of(processList)); //print all processList
 
-//            for (Process proc : processList) proc.setContextSwitch(1);
-            //if (addChooseSchedAlg().getValue() == "FCFS")
-            for (Process proc : processList) proc.setContextSwitch(processList.get(0).getContextSwitch());
-            al.schedule(processList);
 
+            System.out.println("Prova: " + comboBox.getValue());
+            String value = comboBox.getValue();
+            System.out.println("Prova: " + value);
+            if (value == "FCFS") {
+
+                schedule.setSchedulingStrategy("FCFS");
+                System.out.println("Prova: " + comboBox.getValue());
+
+            } else if (value == "SJF") {
+
+                schedule.setSchedulingStrategy("SJF");
+                System.out.println("Prova: " + comboBox.getValue());
+
+            }
+
+
+            schedule.execute(processList, contextSwitch);
 
             createSchedulingSubScene();
-//            System.out.println(processList.get(processList.size() - 1).completion);
-            completionLabel.setText("Completion Time: "+ processList.get(processList.size() - 1).completion);
-            turnaroundLabel.setText("|  Turnaround: "+ processList.get(processList.size()-1).CalculateTurnaroundTime(processList, processList.size()-1));
+
+            averageWaitingTime.setText("Average Waiting Time: " + schedule.averageWaitingTime(processList));
+            turnaroundLabel.setText("|  Average Turnaround: " + schedule.averageTurnaroundTime(processList));
+            normalizedTurnaroundLabel.setText("|  Normalized Average Turnaround: " + schedule.averageTurnaroundNormalized(processList));
+
         });
 
         return scheduleButton;
     }
 
-
-    private Spinner addCSField(){
+    private Spinner addCSField() {
         var CSField = new Spinner<Integer>();
         var cc = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 2, 1); //first element is equal for all
         CSField.setValueFactory(cc);
         CSField.setMaxWidth(60);
 
         CSField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
-
-                for (Process proc : processList) proc.setContextSwitch(Integer.valueOf(newValue));
+            contextSwitch = Integer.valueOf(newValue);
         });
 
         return CSField;
@@ -238,38 +278,19 @@ public class ViewManager {
 
 
 
-    private ComboBox addChooseSchedAlg(){
-        ObservableList<String> options = FXCollections.observableArrayList(
-                "FCFS", "SJF"
-
-        );
-        final ComboBox comboBox = new ComboBox(options);
-        comboBox.getSelectionModel().selectFirst();
-
-        if(comboBox.getValue() == "FCFS") {
-
-        } else if (comboBox.getValue() == "SJF") {
-
-        }
-
-        return comboBox;
-    }
-
-
-    private CheckBox addPriorityCheckBox(){
+    private CheckBox addPriorityCheckBox() {
         CheckBox priorityCheck = new CheckBox("Priority");
         priorityCheck.setTextFill(Color.WHITE);
 
-//        priorityCheck.setSelected(true);
         priorityCheck.setDisable(true);
 
 
         return priorityCheck;
     }
 
-    private void createSchedulingSubScene(){
+    private void createSchedulingSubScene() {
 
-        schedulingSubScene = new SchedulingSubScene(processList);
+        schedulingSubScene = new SchedulingSubScene(processList, contextSwitch);
         schedulingSubScene.setLayoutY(200);
         schedulingSubScene.setLayoutX(50);
         border.getChildren().add(schedulingSubScene);
@@ -299,17 +320,16 @@ public class ViewManager {
         //Change the process panel's number when I change the spinner's value
         numProcessField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
 
-            if(Integer.parseInt(newValue) > Integer.parseInt(oldValue)) {
+            if (Integer.parseInt(newValue) > Integer.parseInt(oldValue)) {
 
                 //create processes when I change
                 addNewProcess();
-            }
-            else
-                processList.remove(processList.size()-1);
+            } else
+                processList.remove(processList.size() - 1);
 
             System.out.println(java.util.List.of(processList));
             gridDisplay.setColumns(processList.size());
-            System.out.println(" "+ java.util.List.of(processList));
+            System.out.println(" " + java.util.List.of(processList));
 
 
             int index = 0;
@@ -321,9 +341,7 @@ public class ViewManager {
         });
 
 
-
-
-            Process process = new Process();
+        Process process = new Process();
 
         processList.add(process);
         addNewProcess();
@@ -338,10 +356,7 @@ public class ViewManager {
         }
 
 
-
-
-
-        addScheduleButton().setLayoutY(numProcessField.getLayoutY()+100);
+        addScheduleButton().setLayoutY(numProcessField.getLayoutY() + 100);
 
         miniHBox.setSpacing(10);
         miniHBox.setAlignment(Pos.BASELINE_RIGHT);
@@ -353,11 +368,12 @@ public class ViewManager {
         HBox sAlRow = new HBox();
         sAlRow.setSpacing(10);
         sAlRow.setAlignment(Pos.BASELINE_RIGHT);
+        sAlRow.setStyle("-fx-text-fill: white;");
 
 
         miniHBox.getChildren().addAll(new Label("N. Proc"), numProcessField);
         miniHBox2.getChildren().addAll(new Label("CS"), addCSField());
-        sAlRow.getChildren().addAll(new Label("Algorithm"), addChooseSchedAlg());
+        sAlRow.getChildren().addAll(new Label("Algorithm"), comboBox);
 
         //add to the VBox buttons and combobox
         buttonVBox.setSpacing(5);
@@ -370,35 +386,34 @@ public class ViewManager {
     }
 
 
-    Label completionLabel = new Label();
+    Label averageWaitingTime = new Label();
     Label turnaroundLabel = new Label();
+    Label normalizedTurnaroundLabel = new Label();
 
     public HBox addHBottomBox() {
         HBox bottombox = new HBox();
         bottombox.setPadding(new Insets(15, 12, 15, 12));
-        bottombox.setEffect(new DropShadow(-2d, 0d, +2d, Color.GREY));
+        bottombox.setEffect(new DropShadow(5d, 20d, +5d, Color.BLACK));
 
 
         bottombox.setSpacing(10);
         bottombox.setStyle("-fx-background-color: #F9423A;");
 
-         completionLabel.setTextFill(Color.WHITE);
+        averageWaitingTime.setTextFill(Color.WHITE);
+        normalizedTurnaroundLabel.setTextFill(Color.WHITE);
+        averageWaitingTime.setText("Coded by Gennaro Caccavale, Davide Cangiano, Ivan Cifariello with ❤");
 
-
-         completionLabel.setText("Made by Gennaro Caccavale, Davide Cangiano, Ivan Cifariello with ❤");
-
-         turnaroundLabel.setTextFill(Color.WHITE);
-        bottombox.getChildren().addAll(completionLabel, turnaroundLabel);
+        turnaroundLabel.setTextFill(Color.WHITE);
+        bottombox.getChildren().addAll(averageWaitingTime, turnaroundLabel, normalizedTurnaroundLabel);
 
         return bottombox;
 
     }
 
 
-        public Stage getMainStage(){
+    public Stage getMainStage() {
         return mainStage;
     }
-
 
 
 }

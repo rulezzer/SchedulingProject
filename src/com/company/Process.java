@@ -6,15 +6,16 @@ import java.util.List;
 import java.util.Random;
 
 public class Process implements ProcessInterface{
-    private Integer idProc;
+    private int idProc;
     private static int lastAssignedId = 0;
-    protected Integer arrivalTime;
-    protected Integer burst;
-    protected Integer completion;
-    private Integer turnAround;
-    private Integer waitingTime;
+    protected int arrivalTime;
+    protected int burst;
+    protected int completion;
+    private int turnAround;
+    private int waitingTime;
     private String type;
-    private Integer startingTime;
+    private int startingTime;
+    private float turnAroundNorm;
     private int contextSwitch;
 
     private List<Process> state;
@@ -34,7 +35,6 @@ public class Process implements ProcessInterface{
         System.out.println("id dopo " + idProc);
 
 
-//  this.contextSwitch = 3;
     }
 
 
@@ -86,11 +86,11 @@ public class Process implements ProcessInterface{
         return "PROCESSOOOOO";
     }
 
-    public Integer getArrivalTime() {
+    public int getArrivalTime() {
         return arrivalTime;
     }
 
-    public Integer getBurst(){
+    public int getBurst(){
         return burst;
     }
 
@@ -106,7 +106,7 @@ public class Process implements ProcessInterface{
 
 
 
-    protected Integer CalculateCompletion(List<Process> processList, int index){
+    protected int CalculateCompletion(List<Process> processList, int index, int contextSwitch){
 
         if (index == 0){
             processList.get(index).completion = processList.get(index).arrivalTime + processList.get(index).burst;
@@ -116,7 +116,7 @@ public class Process implements ProcessInterface{
                 processList.get(index).completion = processList.get(index).arrivalTime + processList.get(index).burst;
             }
             else{
-                processList.get(index).completion = processList.get(index-1).completion + processList.get(index).burst + processList.get(index-1).contextSwitch;
+                processList.get(index).completion = processList.get(index-1).completion + processList.get(index).burst + contextSwitch;
             }
         }
         return completion;
@@ -124,24 +124,24 @@ public class Process implements ProcessInterface{
     }
 
 
-    public Integer getStartingTime(List<Process> processList, int index){
+    public int getStartingTime(List<Process> processList, int index, int contextSwitch){
 
         if(index == 0){
             processList.get(index).startingTime = processList.get(index).arrivalTime;
         }else {
             if(processList.get(index).arrivalTime > processList.get(index-1).completion)
-        {
-              if(processList.get(index-1).startingTime + processList.get(index-1).contextSwitch > processList.get(index).arrivalTime)
-              {
-                  processList.get(index).startingTime = processList.get(index - 1).startingTime +
-                          processList.get(index - 1).completion + processList.get(index - 1).contextSwitch;
-              }else
-                  {
-                  processList.get(index).startingTime = processList.get(index).arrivalTime;
-              }
+            {
+                if(processList.get(index-1).startingTime + contextSwitch > processList.get(index).arrivalTime)
+                {
+                    processList.get(index).startingTime = processList.get(index - 1).startingTime +
+                            processList.get(index - 1).completion + contextSwitch;
+                }else
+                {
+                    processList.get(index).startingTime = processList.get(index).arrivalTime;
+                }
 
-        }else
-            processList.get(index).startingTime =  processList.get(index-1).completion + processList.get(index-1).contextSwitch;
+            }else
+                processList.get(index).startingTime =  processList.get(index-1).completion + contextSwitch;
         }
 
         return startingTime;
@@ -149,7 +149,7 @@ public class Process implements ProcessInterface{
 
 
     //************* aggiunto da davide, domenica 9/2/20 verso le 16.30
-    public Integer CalculateTurnaroundTime(List<Process> processList, int index){
+    public int CalculateTurnaroundTime(List<Process> processList, int index){
         processList.get(index).turnAround = processList.get(index).completion - processList.get(index).arrivalTime;
 
         return turnAround;
@@ -158,31 +158,30 @@ public class Process implements ProcessInterface{
 
 
     //************* aggiunto da davide, domenica 9/2/20 verso le 16.30
-    public Integer CalculateWaitingTime(List<Process> processList, int index){
+    public int CalculateWaitingTime(List<Process> processList, int index){
 
         processList.get(index).waitingTime = processList.get(index).turnAround - processList.get(index).burst;
 
         return waitingTime;
     }
 
-
-    public void setContextSwitch(int contextSwitch) {
-        this.contextSwitch = contextSwitch;
-    }
-
-    public int getContextSwitch(){
-        return contextSwitch;
+    public float calculateNormalizedTurnaround(List<Process> processList, int index){
+        processList.get(index).turnAroundNorm = (float) processList.get(index).turnAround/processList.get(index).burst;
+        return turnAroundNorm;
     }
 
 
     public void setIdProc(Integer idProc) {
 
 
-     this.idProc = idProc;
+        this.idProc = idProc;
     }
 
     public Integer getIdProc() {
 
         return idProc;
     }
+
+
+
 }

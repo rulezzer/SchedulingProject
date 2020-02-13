@@ -1,22 +1,18 @@
 package com.company;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.geometry.Pos;
 import javafx.scene.SubScene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-import java.net.CookieHandler;
 import java.util.*;
 
 public class SchedulingSubScene extends SubScene {
@@ -34,16 +30,21 @@ public class SchedulingSubScene extends SubScene {
     private GridPane timelineGrid;
 
     private List<Process> processList;
+    private int contextSwitch;
 
-    public SchedulingSubScene(List processList) {
+    //flyweight init
+    RectUnit rectUnit = new RectUnit();
+
+
+    public SchedulingSubScene(List processList, int cs) {
         super(new AnchorPane(), 1000, 250);
 
         this.processList = processList;
+        this.contextSwitch = cs;
 
         createGrid();
         createProcessColumn();
         createTimeline();
-
     }
 
 
@@ -52,25 +53,19 @@ public class SchedulingSubScene extends SubScene {
 
         root.getChildren().add(processColumn);
 
-        RectUnit rectUnit = new RectUnit();
+//        root.setStyle("-fx-background-color: rgba(255, 255, 255, 0.5);");
 
 
         for (Process process : processList) {
-            System.out.println("kkkkkk");
+
+            Rectangle procNumber = rectUnit.makeRect(50, TILE_SIZE, "ccc", "-fx-fill: F96231; -fx-stroke: FFFFFF; -fx-stroke-width: 1; -fx-stroke-type: inside; ");
+
             StackPane stack = new StackPane();
             Label processNumber = new Label("P " + (processList.indexOf(process) + 1));
             processNumber.setTextFill(Color.WHITE);
 
 
-            var xx = rectUnit.makeRect(1, 2, "ccc", Color.BLACK);
-
-
-            Rectangle rectField = new Rectangle(50, TILE_SIZE);
-
-            stack.getChildren().addAll(rectField, processNumber, rectUnit.makeRect(10, 20, "ccc", Color.BLACK));
-
-            rectField.setStyle("-fx-fill: F96231; -fx-stroke: FFFFFF; -fx-stroke-width: 1; -fx-stroke-type: inside; ");
-
+            stack.getChildren().addAll(procNumber, processNumber);
 
             GridPane.setConstraints(stack, 0, (processList.indexOf(process) + 1));
             processColumn.getChildren().addAll(stack);
@@ -86,8 +81,6 @@ public class SchedulingSubScene extends SubScene {
 
         grid = new GridPane();
         grid.setLayoutX(50);
-        Rectangle rectProcess;
-
 
         root.getChildren().add(grid);
 
@@ -96,93 +89,79 @@ public class SchedulingSubScene extends SubScene {
 
             //richiamare ordimamemto per arrival
 
-            for (int j = 0; j < processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process)); j++) {
-                rectProcess = new Rectangle(TILE_SIZE, TILE_SIZE);
-                rectProcess.setStyle("-fx-fill: pink; "); //fai colori random
-                rectProcess.setArcHeight(5);
-                rectProcess.setArcWidth(5);
-                GridPane.setConstraints(rectProcess, j, process.getIdProc());
-                grid.getChildren().addAll(rectProcess);
+            for (int j = 0; j < processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process), contextSwitch); j++) {
+
+                //PINK process unit
+                Rectangle pinkUnit = rectUnit.makeRect(TILE_SIZE, TILE_SIZE, "pU", "-fx-fill: transparent; -fx-stroke: grey; -fx-stroke-width: 0.1; -fx-stroke-type: inside;");
+
+                GridPane.setConstraints(pinkUnit, j, process.getIdProc());
+                grid.getChildren().addAll(pinkUnit);
 
 
-                FadeTransition ft = new FadeTransition(Duration.millis(500), rectProcess);
+                FadeTransition ft = new FadeTransition(Duration.millis(500), pinkUnit);
                 ft.setFromValue(0.25);
                 ft.setToValue(1);
                 ft.play();
 
-                TranslateTransition openNav = new TranslateTransition(Duration.millis(500), rectProcess);
+                TranslateTransition openNav = new TranslateTransition(Duration.millis(500), pinkUnit);
                 openNav.fromXProperty().setValue(-10);
                 openNav.setToX(0);
 
                 openNav.play();
-                TranslateTransition closeNav = new TranslateTransition(new Duration(500), rectProcess);
+                TranslateTransition closeNav = new TranslateTransition(new Duration(500), pinkUnit);
 
-                closeNav.setToX(-(rectProcess.getWidth()));
+                closeNav.setToX(-(pinkUnit.getWidth()));
             }
 
-            System.out.println(process.getContextSwitch() + "contex");
 
-            for (int j = (processList.get(processList.indexOf(process)).getStartingTime(processList, processList.indexOf(process)) - process.getContextSwitch()); j < processList.get(processList.indexOf(process)).getStartingTime(processList, processList.indexOf(process)); j++) {
-
-                if (processList.indexOf(process) != 0) {
-                    rectProcess = new Rectangle(TILE_SIZE, TILE_SIZE);
-                    rectProcess.setStyle("-fx-fill: Grey; "); //fai colori random
-                    rectProcess.setArcHeight(5);
-                    rectProcess.setArcWidth(5);
-                    GridPane.setConstraints(rectProcess, j, process.getIdProc());
-                    grid.getChildren().addAll(rectProcess);
+            for(int j = processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process), contextSwitch); j < processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process), contextSwitch) + contextSwitch; j++) {
+                //CONTEXT SWITCH unit
+                Rectangle contextSwitchUnit = rectUnit.makeRect(TILE_SIZE, TILE_SIZE, "csU", "-fx-background-fill: grey;", 5, 5);
 
 
-                    FadeTransition ft = new FadeTransition(Duration.millis(500), rectProcess);
-                    ft.setFromValue(0.25);
-                    ft.setToValue(1);
-                    ft.play();
+                if (processList.indexOf(process) != processList.size()-1) {
+                    GridPane.setConstraints(contextSwitchUnit, j, process.getIdProc());
+                    grid.getChildren().addAll(contextSwitchUnit);
+                    contextSwitchUnit.setFill(new ImagePattern(new Image("com/company/resources/stripes.png")));
 
-                    TranslateTransition openNav = new TranslateTransition(Duration.millis(500), rectProcess);
-                    openNav.fromXProperty().setValue(-10);
-                    openNav.setToX(0);
-
-                    openNav.play();
-                    TranslateTransition closeNav = new TranslateTransition(new Duration(1000), rectProcess);
-
-                    closeNav.setToX(-(rectProcess.getWidth()));
+                    specialEffects(contextSwitchUnit);
                 }
             }
 
-            for (int j = processList.get(processList.indexOf(process)).getStartingTime(processList, processList.indexOf(process));
-                 j < processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process)); j++) {
+            for (int j = processList.get(processList.indexOf(process)).getStartingTime(processList, processList.indexOf(process), contextSwitch);
+                 j < processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process), contextSwitch); j++) {
+
+                //GREEN process unit
+                Rectangle processUnit = rectUnit.makeRect(TILE_SIZE, TILE_SIZE, "pU", "-fx-fill: #00AB84;", 5, 5);
+
+                GridPane.setConstraints(processUnit, j, process.getIdProc());
+                grid.getChildren().add(processUnit);
 
 
-                rectProcess = new Rectangle(TILE_SIZE, TILE_SIZE);
-                rectProcess.setStyle("-fx-fill: #00AB84; "); //fai colori random
-                rectProcess.setArcHeight(5);
-                rectProcess.setArcWidth(5);
-                GridPane.setConstraints(rectProcess, j, process.getIdProc());
-                grid.getChildren().addAll(rectProcess);
-
-
-                FadeTransition ft = new FadeTransition(Duration.millis(500), rectProcess);
-                ft.setFromValue(0.25);
-                ft.setToValue(1);
-                ft.play();
-
-                TranslateTransition openNav = new TranslateTransition(Duration.millis(500), rectProcess);
-                openNav.fromXProperty().setValue(-10);
-                openNav.setToX(0);
-
-                openNav.play();
-                TranslateTransition closeNav = new TranslateTransition(new Duration(1000), rectProcess);
-
-                closeNav.setToX(-(rectProcess.getWidth()));
+                specialEffects(processUnit);
 
 
             }
 
-
         }
+
         processList.sort(Comparator.comparing(Process::getIdProc));
         return grid;
 
+    }
+
+    private void specialEffects(Rectangle processUnit) {
+        FadeTransition ft = new FadeTransition(Duration.millis(500), processUnit);
+        ft.setFromValue(0.25);
+        ft.setToValue(1);
+        ft.play();
+
+        TranslateTransition openNav = new TranslateTransition(Duration.millis(500), processUnit);
+        openNav.fromXProperty().setValue(-10);
+        openNav.setToX(0);
+        openNav.play();
+        TranslateTransition closeNav = new TranslateTransition(new Duration(1000), processUnit);
+        closeNav.setToX(-(processUnit.getWidth()));
     }
 
     public GridPane createTimeline() {
@@ -197,6 +176,7 @@ public class SchedulingSubScene extends SubScene {
             if (maxcompl < proc.completion)
                 maxcompl = proc.completion;
         }
+//        for (Process proc : processList)  maxcompl = (maxcompl < proc.completion)? maxcompl = proc.completion;
         for (int i = 0; i < maxcompl; i++) {
             if (i % 5 == 0) {
                 Label timeline = new Label(String.valueOf(i));

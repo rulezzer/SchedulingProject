@@ -1,8 +1,5 @@
 package com.company;
 
-import javafx.scene.layout.GridPane;
-import java.sql.*;
-
 import java.util.List;
 
 public class Schedule {
@@ -28,7 +25,8 @@ public class Schedule {
           this.schedulingStrategy.schedule(processList,contextSwitch);
 
             SchedulingConnection SchedConn = new SchedulingConnection();
-            SchedConn.Connect(processList);
+
+            SchedConn.connect(processList);
         }
     }
 

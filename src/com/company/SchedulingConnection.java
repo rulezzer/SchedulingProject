@@ -1,9 +1,6 @@
 package com.company;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Date;
 import java.util.List;
 
@@ -15,13 +12,16 @@ public class SchedulingConnection {
 
     // JDBC driver name and database URL
 //    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+    static final String DB_URL = "jdbc:postgresql://kandula.db.elephantsql.com:5432/rxikhsae";
 
     //  Database credentials
-    static final String USER = "postgres";
-    static final String PASS = "chuck";
+    static final String USER = "rxikhsae";
+    static final String PASS = "hrdIjtZaLpr4ynLFo1nwVxtoPfL-MJdp";
+  private List<Process> processList;
 
-    void Connect(List<Process> processList) {
+
+    int timeStamp = (int) new Date().getTime();
+    Connection connect(List<Process> processList) {
         Connection conn = null;
         Statement stmt = null;
         try{
@@ -39,7 +39,6 @@ public class SchedulingConnection {
 
             System.out.println("print");
 
-            int timeStamp = (int) new Date().getTime();
 
 
 
@@ -98,5 +97,24 @@ public class SchedulingConnection {
             }//end finally try
         }//end try
         System.out.println("Goodbye!");
+        return conn;
     }//end main
+
+    public int delete(int id) {
+        String SQL = "DELETE FROM process WHERE " + timeStamp + " = ?";
+
+        int affectedrows = 0;
+
+        try (Connection conn = connect(processList);
+             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+
+            pstmt.setInt(1, id);
+
+            affectedrows = pstmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return affectedrows;
+    }
 }//end JDBCExample

@@ -37,10 +37,6 @@ public class Process implements ProcessInterface{
 
 
 
-    public Memento createMemento(){
-        return new Memento();
-    }
-
     private int setArrivalTime(){
         Random rand = new Random();
         arrivalTime = rand.nextInt(15);

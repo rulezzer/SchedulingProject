@@ -1,6 +1,7 @@
 package com.company;
 
 import javafx.scene.layout.GridPane;
+import java.sql.*;
 
 import java.util.List;
 
@@ -25,6 +26,9 @@ public class Schedule {
     public void execute(List<Process> processList, int contextSwitch) {
         if (this.schedulingStrategy != null) {
           this.schedulingStrategy.schedule(processList,contextSwitch);
+
+            SchedulingConnection SchedConn = new SchedulingConnection();
+            SchedConn.Connect(processList);
         }
     }
 

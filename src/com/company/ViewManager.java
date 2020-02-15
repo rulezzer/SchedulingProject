@@ -10,10 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -33,7 +30,6 @@ public class ViewManager {
     private int contextSwitch = 1;
     private Schedule schedule = new Schedule();
 
-    Memento memento = new Memento();
 
     ObservableList<String> options = FXCollections.observableArrayList(
             "FCFS", "SJF"
@@ -46,10 +42,8 @@ public class ViewManager {
 
         mainStage = new Stage();
 
-
         //Represents the grid with Rectangles
         gridDisplay = new ViewManager.GridDisplay(processList.size());
-
 
         //Function to set an action when text field loses focus
         HBox hbox = addHBox();
@@ -226,7 +220,7 @@ public class ViewManager {
     private Button addScheduleButton() {
 
         Button scheduleButton = new Button("Schedule");
-        scheduleButton.setPrefSize(100, 20);
+        scheduleButton.setPrefSize(150, 20);
         scheduleButton.setAlignment(Pos.CENTER);
         comboBox.getSelectionModel().selectFirst();
 
@@ -376,8 +370,8 @@ public class ViewManager {
         sAlRow.getChildren().addAll(new Label("Algorithm"), comboBox);
 
         //add to the VBox buttons and combobox
-        buttonVBox.setSpacing(5);
-        buttonVBox.getChildren().addAll(miniHBox, miniHBox2, sAlRow, addPriorityCheckBox(), addScheduleButton());
+        buttonVBox.setSpacing(10);
+        buttonVBox.getChildren().addAll(miniHBox, miniHBox2, sAlRow, /*addPriorityCheckBox(),*/ addScheduleButton());
 
         hbox.getChildren().addAll(buttonVBox, gridDisplay.getDisplay());
 
@@ -401,10 +395,31 @@ public class ViewManager {
 
         averageWaitingTime.setTextFill(Color.WHITE);
         normalizedTurnaroundLabel.setTextFill(Color.WHITE);
-        averageWaitingTime.setText("Coded by Gennaro Caccavale, Davide Cangiano, Ivan Cifariello with ❤");
+        averageWaitingTime.setText("Coded by Gennaro Caccavale, Davide Cangiano, Ivan Cifariello with  ❤");
 
         turnaroundLabel.setTextFill(Color.WHITE);
-        bottombox.getChildren().addAll(averageWaitingTime, turnaroundLabel, normalizedTurnaroundLabel);
+
+
+        final Pane spacer = new Pane();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        spacer.setMinSize(10, 1);
+
+        Button openRecordView = new Button("History");
+        openRecordView.setAlignment(Pos.BASELINE_RIGHT);
+        openRecordView.setOnAction((event) -> {
+
+            try {
+                RecordTableView recordTableView = new RecordTableView();
+                Stage recordStage = recordTableView.getRecordStageStage();
+                recordStage.show();
+                recordStage.setTitle("Scheduling Simulator History");
+                recordStage.show();
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+                });
+
+            bottombox.getChildren().addAll(averageWaitingTime, turnaroundLabel, normalizedTurnaroundLabel, spacer, openRecordView);
 
         return bottombox;
 

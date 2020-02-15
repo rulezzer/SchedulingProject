@@ -4,6 +4,7 @@ import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.SubScene;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -177,6 +178,7 @@ public class SchedulingSubScene extends SubScene {
                 maxcompl = proc.completion;
         }
 //        for (Process proc : processList)  maxcompl = (maxcompl < proc.completion)? maxcompl = proc.completion;
+
         for (int i = 0; i < maxcompl; i++) {
             if (i % 5 == 0) {
                 Label timeline = new Label(String.valueOf(i));

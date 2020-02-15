@@ -13,12 +13,10 @@ public class Process implements ProcessInterface{
     protected int completion;
     private int turnAround;
     private int waitingTime;
-    private String type;
     private int startingTime;
     private float turnAroundNorm;
     private int contextSwitch;
 
-    private List<Process> state;
 
 
 
@@ -39,10 +37,6 @@ public class Process implements ProcessInterface{
 
 
 
-    public void setMememento(Memento m){
-        state = m.getState();
-
-    }
     public Memento createMemento(){
         return new Memento();
     }

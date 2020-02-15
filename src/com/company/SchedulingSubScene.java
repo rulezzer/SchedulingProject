@@ -57,18 +57,28 @@ public class SchedulingSubScene extends SubScene {
 //        root.setStyle("-fx-background-color: rgba(255, 255, 255, 0.5);");
 
 
+        StackPane vuoto = new StackPane();
+        Label timeLine = new Label("");
+        timeLine.setTextFill(Color.WHITE);
+
+        Rectangle vuotoRet = rectUnit.makeRect(50, TILE_SIZE, "ccc", "-fx-fill: white; -fx-stroke: FFFFFF; -fx-stroke-width: 1; -fx-stroke-type: inside; ");
+        vuoto.getChildren().addAll(vuotoRet,timeLine);
+
+        GridPane.setConstraints(vuoto,0,0);
+        processColumn.getChildren().addAll(vuoto);
+        
         for (Process process : processList) {
 
             Rectangle procNumber = rectUnit.makeRect(50, TILE_SIZE, "ccc", "-fx-fill: F96231; -fx-stroke: FFFFFF; -fx-stroke-width: 1; -fx-stroke-type: inside; ");
 
             StackPane stack = new StackPane();
-            Label processNumber = new Label("P " + (processList.indexOf(process) + 1));
+            Label processNumber = new Label("P " + (process.getIdProc()+1));
             processNumber.setTextFill(Color.WHITE);
 
 
             stack.getChildren().addAll(procNumber, processNumber);
 
-            GridPane.setConstraints(stack, 0, (processList.indexOf(process) + 1));
+            GridPane.setConstraints(stack, 0, (process.getIdProc()+1));
             processColumn.getChildren().addAll(stack);
 
         }
@@ -95,7 +105,7 @@ public class SchedulingSubScene extends SubScene {
                 //PINK process unit
                 Rectangle pinkUnit = rectUnit.makeRect(TILE_SIZE, TILE_SIZE, "pU", "-fx-fill: transparent; -fx-stroke: grey; -fx-stroke-width: 0.1; -fx-stroke-type: inside;");
 
-                GridPane.setConstraints(pinkUnit, j, process.getIdProc());
+                GridPane.setConstraints(pinkUnit, j, process.getIdProc()+1);
                 grid.getChildren().addAll(pinkUnit);
 
 
@@ -121,7 +131,7 @@ public class SchedulingSubScene extends SubScene {
 
 
                 if (processList.indexOf(process) != processList.size()-1) {
-                    GridPane.setConstraints(contextSwitchUnit, j, process.getIdProc());
+                    GridPane.setConstraints(contextSwitchUnit, j, process.getIdProc()+1);
                     grid.getChildren().addAll(contextSwitchUnit);
                     contextSwitchUnit.setFill(new ImagePattern(new Image("com/company/resources/stripes.png")));
 
@@ -135,7 +145,7 @@ public class SchedulingSubScene extends SubScene {
                 //GREEN process unit
                 Rectangle processUnit = rectUnit.makeRect(TILE_SIZE, TILE_SIZE, "pU", "-fx-fill: #00AB84;", 5, 5);
 
-                GridPane.setConstraints(processUnit, j, process.getIdProc());
+                GridPane.setConstraints(processUnit, j, process.getIdProc()+1);
                 grid.getChildren().add(processUnit);
 
 
@@ -169,36 +179,18 @@ public class SchedulingSubScene extends SubScene {
 
         timelineGrid = new GridPane();
 
-        root.getChildren().add(timelineGrid);
-
+      //  root.getChildren().add(timelineGrid);
+        Observable completionChange = new Observable();
+        Observer observer = new ObserverCompletion(grid);
+        completionChange.addObserver(observer);
 
         int maxcompl = 0;
         for (Process proc : processList) {
-            if (maxcompl < proc.completion)
-                maxcompl = proc.completion;
+            if (maxcompl < proc.completion){
+                maxcompl=proc.completion;
+                completionChange.setMaxCS(proc.completion);}
         }
-//        for (Process proc : processList)  maxcompl = (maxcompl < proc.completion)? maxcompl = proc.completion;
-
-        for (int i = 0; i < maxcompl; i++) {
-            if (i % 5 == 0) {
-                Label timeline = new Label(String.valueOf(i));
-//                    timeline.setAlignment(Pos.CENTER);
-                GridPane.setConstraints(timeline, i, (processList.size() + 1));
-
-                System.out.println("processList size + 1:   " + (processList.size() + 1));
-
-                FadeTransition ft = new FadeTransition(Duration.millis(1500), timeline);
-                ft.setFromValue(0);
-                ft.setToValue(1);
-                ft.play();
-
-                grid.getChildren().add(timeline);
-
-            }
-        }
-
 
         return timelineGrid;
     }
-
 }

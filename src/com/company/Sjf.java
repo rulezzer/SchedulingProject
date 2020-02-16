@@ -7,7 +7,7 @@ import java.util.List;
 public class Sjf implements SchedulingStrategy{
 
     @Override
-    public void schedule(List<Process> processList, int contextSwitch) {
+    public void schedule(ProcessCollections processCollections, int contextSwitch) {
 
 
 //        for (Process proc : processList) System.out.println("1 arr " +proc.getArrivalTime() + " bu " + proc.burst);
@@ -31,7 +31,7 @@ public class Sjf implements SchedulingStrategy{
 //        }
 //        for (Process proc : processList) System.out.println("3 arr " +proc.getArrivalTime() + " bu " + proc.burst);
 
-
+        List<Process> processList = processCollections.getList();
         Collections.sort(processList, Comparator.comparing(Process::getArrivalTime).thenComparing(Process::getBurst));
 
         final List<Process> copiaaRRAY = processList;

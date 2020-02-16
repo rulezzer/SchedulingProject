@@ -17,13 +17,16 @@ public class SchedulingConnection {
     //  Database credentials
     static final String USER = "rxikhsae";
     static final String PASS = "hrdIjtZaLpr4ynLFo1nwVxtoPfL-MJdp";
-  private List<Process> processList;
+    private Iterator procIterator;
+    private ProcessCollections processCollections;
+
 
 
     int timeStamp = (int) new Date().getTime();
-    Connection connect(List<Process> processList) {
+    Connection connect(ProcessCollections processCollection) {
         Connection conn = null;
         Statement stmt = null;
+        procIterator= processCollection.createIterator();
         try{
             //STEP 2: Register JDBC driver
 //            Class.forName("com.mysql.jdbc.Driver");
@@ -48,7 +51,8 @@ public class SchedulingConnection {
 
 
             //append ArrayList element followed by comma
-            for(Process proc : processList) {
+            while(procIterator.hasNext()) {
+                Process proc = (Process) procIterator.next();
                 sbArrival.append(proc.arrivalTime).append(",");
                 sbBurst.append(proc.burst).append(",");
                 sbidProc.append(proc.getIdProc()).append(",");
@@ -61,7 +65,7 @@ public class SchedulingConnection {
 
 
             //remove last comma from String
-            if( processList.size() > 0 ) {
+            if( processCollection.getSize() > 0 ) {
                 arrList = arrList.substring(0, arrList.length() - 1);
                 burstList = burstList.substring(0, burstList.length() - 1);
                 idProcList = idProcList.substring(0, idProcList.length() - 1);
@@ -105,7 +109,9 @@ public class SchedulingConnection {
 
         int affectedrows = 0;
 
-        try (Connection conn = connect(processList);
+
+
+        try (Connection conn = connect(processCollections);
              PreparedStatement pstmt = conn.prepareStatement(SQL)) {
 
             pstmt.setInt(1, id);

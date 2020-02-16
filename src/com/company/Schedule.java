@@ -20,13 +20,13 @@ public class Schedule {
         }
     }
 
-    public void execute(List<Process> processList, int contextSwitch) {
+    public void execute(ProcessCollections processCollection, int contextSwitch) {
         if (this.schedulingStrategy != null) {
-          this.schedulingStrategy.schedule(processList,contextSwitch);
+          this.schedulingStrategy.schedule(processCollection,contextSwitch);
 
             SchedulingConnection SchedConn = new SchedulingConnection();
 
-            SchedConn.connect(processList);
+            SchedConn.connect(processCollection);
         }
     }
 

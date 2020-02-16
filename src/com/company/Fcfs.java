@@ -5,8 +5,8 @@ import java.util.List;
 
 public class Fcfs implements SchedulingStrategy {
     @Override
-    public void schedule(List<Process> processList, int contextSwitch) {
-
+    public void schedule(ProcessCollections processCollections, int contextSwitch) {
+        List<Process> processList = processCollections.getList();
 
         var copiaaRRAY = processList;
         copiaaRRAY.sort(Comparator.comparing(Process::getArrivalTime));

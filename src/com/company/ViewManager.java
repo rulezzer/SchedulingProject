@@ -26,9 +26,15 @@ public class ViewManager {
     private SchedulingSubScene schedulingSubScene;
     protected BorderPane border = new BorderPane();
 
-    public List<Process> processList = new ArrayList<>();
+
+    protected Iterator procIterator;
+    protected ProcessCollections processCollections= new ProcessCollections();
+
+
+    public List<Process> processList = processCollections.getList();
     private int contextSwitch = 1;
     private Schedule schedule = new Schedule();
+
 
 
     ObservableList<String> options = FXCollections.observableArrayList(
@@ -244,7 +250,7 @@ public class ViewManager {
             }
 
 
-            schedule.execute(processList, contextSwitch);
+            schedule.execute(processCollections, contextSwitch);
 
             createSchedulingSubScene();
 
@@ -284,7 +290,7 @@ public class ViewManager {
 
     private void createSchedulingSubScene() {
 
-        schedulingSubScene = new SchedulingSubScene(processList, contextSwitch);
+        schedulingSubScene = new SchedulingSubScene(processCollections, contextSwitch);
         schedulingSubScene.setLayoutY(200);
         schedulingSubScene.setLayoutX(50);
         border.getChildren().add(schedulingSubScene);
@@ -317,38 +323,34 @@ public class ViewManager {
             if (Integer.parseInt(newValue) > Integer.parseInt(oldValue)) {
 
                 //create processes when I change
-                addNewProcess();
-            } else
-                processList.remove(processList.size() - 1);
+                //addNewProcess();
+                processCollections.addProc();
 
-            System.out.println(java.util.List.of(processList));
-            gridDisplay.setColumns(processList.size());
-            System.out.println(" " + java.util.List.of(processList));
+            } else {
+                //processList.remove(processList.size() - 1);
+                processCollections.removeProc();
+            }
+            //  System.out.println(java.util.List.of(processList));
+            gridDisplay.setColumns(processCollections.getSize());
+            //System.out.println(" " + java.util.List.of(processList));
 
 
             int index = 0;
-            for (Process xxx : processList) {
-                System.out.println("Arrival Time: " + xxx.getArrivalTime() + " - Burst Time: " + xxx.getBurst());
-                index++;
+
+            procIterator= processCollections.createIterator();
+            Process process = new Process();
+            while(procIterator.hasNext()){
+                Process proc=(Process) procIterator.next();
+                System.out.println("Arrival Time Iterator: " + proc.getArrivalTime() +" - Burst Time: " + proc.getBurst());
             }
 
         });
 
-
-        Process process = new Process();
-
-        processList.add(process);
-        addNewProcess();
+        // processList.add(process);
+        //addNewProcess();
 
         // DA OTTIMIZZARE
-        gridDisplay.setColumns(processList.size());
-
-
-        for (Process xxx : processList) {
-            System.out.println("Arrival Time: " + xxx.getArrivalTime());
-
-        }
-
+        gridDisplay.setColumns(processCollections.getSize());
 
         addScheduleButton().setLayoutY(numProcessField.getLayoutY() + 100);
 
@@ -417,9 +419,9 @@ public class ViewManager {
             } catch(Exception e) {
                 e.printStackTrace();
             }
-                });
+        });
 
-            bottombox.getChildren().addAll(averageWaitingTime, turnaroundLabel, normalizedTurnaroundLabel, spacer, openRecordView);
+        bottombox.getChildren().addAll(averageWaitingTime, turnaroundLabel, normalizedTurnaroundLabel, spacer, openRecordView);
 
         return bottombox;
 

@@ -30,6 +30,8 @@ public class SchedulingSubScene extends SubScene {
     private GridPane processColumn;
     private GridPane timelineGrid;
 
+    protected ProcessCollections processCollections;
+    private Iterator procIterator;
     private List<Process> processList;
     private int contextSwitch;
 
@@ -37,11 +39,12 @@ public class SchedulingSubScene extends SubScene {
     RectUnit rectUnit = new RectUnit();
 
 
-    public SchedulingSubScene(List processList, int cs) {
+    public SchedulingSubScene( ProcessCollections processCollections, int cs) {
         super(new AnchorPane(), 1000, 250);
 
-        this.processList = processList;
+        this.processCollections = processCollections;
         this.contextSwitch = cs;
+        procIterator= processCollections.createIterator();
 
         createGrid();
         createProcessColumn();
@@ -61,24 +64,22 @@ public class SchedulingSubScene extends SubScene {
         Label timeLine = new Label("");
         timeLine.setTextFill(Color.WHITE);
 
-        Rectangle vuotoRet = rectUnit.makeRect(50, TILE_SIZE, "ccc", "-fx-fill: white; -fx-stroke: FFFFFF; -fx-stroke-width: 1; -fx-stroke-type: inside; ");
+        Rectangle vuotoRet = rectUnit.makeRect(50, TILE_SIZE, "ccc", "-fx-fill: transparent; -fx-stroke: FFFFFF; -fx-stroke-width: 1; -fx-stroke-type: inside; ");
         vuoto.getChildren().addAll(vuotoRet,timeLine);
 
         GridPane.setConstraints(vuoto,0,0);
         processColumn.getChildren().addAll(vuoto);
-        
-        for (Process process : processList) {
 
+        // for (Process process : processList) {
+
+        while(procIterator.hasNext()){
+            Process proc=(Process) procIterator.next();
             Rectangle procNumber = rectUnit.makeRect(50, TILE_SIZE, "ccc", "-fx-fill: F96231; -fx-stroke: FFFFFF; -fx-stroke-width: 1; -fx-stroke-type: inside; ");
-
             StackPane stack = new StackPane();
-            Label processNumber = new Label("P " + (process.getIdProc()+1));
+            Label processNumber = new Label("P " + (procIterator.getPosition()));
             processNumber.setTextFill(Color.WHITE);
-
-
             stack.getChildren().addAll(procNumber, processNumber);
-
-            GridPane.setConstraints(stack, 0, (process.getIdProc()+1));
+            GridPane.setConstraints(stack, 0, (proc.getIdProc()+1));
             processColumn.getChildren().addAll(stack);
 
         }
@@ -95,12 +96,13 @@ public class SchedulingSubScene extends SubScene {
 
         root.getChildren().add(grid);
 
-        for (Process process : processList) {
+        // for (Process process : processList) {
 
-
+        while(procIterator.hasNext()){
+            Process process=(Process) procIterator.next();
             //richiamare ordimamemto per arrival
 
-            for (int j = 0; j < processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process), contextSwitch); j++) {
+            for (int j = 0; j <  processCollections.getCompletion(process, contextSwitch); j++) {
 
                 //PINK process unit
                 Rectangle pinkUnit = rectUnit.makeRect(TILE_SIZE, TILE_SIZE, "pU", "-fx-fill: transparent; -fx-stroke: grey; -fx-stroke-width: 0.1; -fx-stroke-type: inside;");
@@ -125,12 +127,12 @@ public class SchedulingSubScene extends SubScene {
             }
 
 
-            for(int j = processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process), contextSwitch); j < processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process), contextSwitch) + contextSwitch; j++) {
+            for(int j = processCollections.getCompletion(process, contextSwitch); j < processCollections.getCompletion(process, contextSwitch)+ contextSwitch; j++) {
                 //CONTEXT SWITCH unit
                 Rectangle contextSwitchUnit = rectUnit.makeRect(TILE_SIZE, TILE_SIZE, "csU", "-fx-background-fill: grey;", 5, 5);
 
 
-                if (processList.indexOf(process) != processList.size()-1) {
+                if (processCollections.getProcIndex(process) != processCollections.getSize()-1) {
                     GridPane.setConstraints(contextSwitchUnit, j, process.getIdProc()+1);
                     grid.getChildren().addAll(contextSwitchUnit);
                     contextSwitchUnit.setFill(new ImagePattern(new Image("com/company/resources/stripes.png")));
@@ -139,8 +141,7 @@ public class SchedulingSubScene extends SubScene {
                 }
             }
 
-            for (int j = processList.get(processList.indexOf(process)).getStartingTime(processList, processList.indexOf(process), contextSwitch);
-                 j < processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process), contextSwitch); j++) {
+            for (int j =processCollections.getStartingTime(process, contextSwitch); j < processCollections.getCompletion(process, contextSwitch); j++) {
 
                 //GREEN process unit
                 Rectangle processUnit = rectUnit.makeRect(TILE_SIZE, TILE_SIZE, "pU", "-fx-fill: #00AB84;", 5, 5);
@@ -156,7 +157,7 @@ public class SchedulingSubScene extends SubScene {
 
         }
 
-        processList.sort(Comparator.comparing(Process::getIdProc));
+        processCollections.sort();
         return grid;
 
     }
@@ -179,13 +180,16 @@ public class SchedulingSubScene extends SubScene {
 
         timelineGrid = new GridPane();
 
-      //  root.getChildren().add(timelineGrid);
+        //  root.getChildren().add(timelineGrid);
         Observable completionChange = new Observable();
         Observer observer = new ObserverCompletion(grid);
         completionChange.addObserver(observer);
 
         int maxcompl = 0;
-        for (Process proc : processList) {
+        while(procIterator.hasNext()) {
+            Process proc = (Process) procIterator.next();
+            System.out.println("TIMRLINR"+proc.completion);
+            //  for (Process proc : processList) {
             if (maxcompl < proc.completion){
                 maxcompl=proc.completion;
                 completionChange.setMaxCS(proc.completion);}

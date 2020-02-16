@@ -3,6 +3,6 @@ package com.company;
 import java.util.List;
 
 public interface SchedulingStrategy {
-    public void schedule(List<Process> processList, int contextSwitch);
+    public void schedule(ProcessCollections processCollections, int contextSwitch);
 
 }

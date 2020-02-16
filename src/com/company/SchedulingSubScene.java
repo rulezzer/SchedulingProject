@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -22,8 +23,7 @@ public class SchedulingSubScene extends SubScene {
 
     AnchorPane root = (AnchorPane) this.getRoot();
 
-    private static final int BOARD_COLUMN = 20;
-    private static final int BOARD_ROW = 20;
+
     private static final int TILE_SIZE = 20;
 
     private GridPane grid;
@@ -40,7 +40,7 @@ public class SchedulingSubScene extends SubScene {
 
 
     public SchedulingSubScene( ProcessCollections processCollections, int cs) {
-        super(new AnchorPane(), 1000, 250);
+        super(new AnchorPane(), 1000, 230);
 
         this.processCollections = processCollections;
         this.contextSwitch = cs;
@@ -62,7 +62,7 @@ public class SchedulingSubScene extends SubScene {
 
         StackPane vuoto = new StackPane();
         Label timeLine = new Label("");
-        timeLine.setTextFill(Color.WHITE);
+        timeLine.setTextFill(Color.TRANSPARENT);
 
         Rectangle vuotoRet = rectUnit.makeRect(50, TILE_SIZE, "ccc", "-fx-fill: transparent; -fx-stroke: FFFFFF; -fx-stroke-width: 1; -fx-stroke-type: inside; ");
         vuoto.getChildren().addAll(vuotoRet,timeLine);

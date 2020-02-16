@@ -31,6 +31,7 @@ public class ViewManager {
     protected ProcessCollections processCollections= new ProcessCollections();
 
 
+    //public?? Controllare
     public List<Process> processList = processCollections.getList();
     private int contextSwitch = 1;
     private Schedule schedule = new Schedule();
@@ -56,7 +57,6 @@ public class ViewManager {
         HBox bottombox = addHBottomBox();
         border.setTop(hbox);
         border.setBottom(bottombox);
-
         mainScene = new Scene(border, 800, 500);
 
         mainStage.setScene(mainScene);
@@ -293,6 +293,8 @@ public class ViewManager {
         schedulingSubScene = new SchedulingSubScene(processCollections, contextSwitch);
         schedulingSubScene.setLayoutY(200);
         schedulingSubScene.setLayoutX(50);
+        schedulingSubScene.toBack();
+
         border.getChildren().add(schedulingSubScene);
 
     }

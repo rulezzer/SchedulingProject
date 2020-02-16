@@ -10,8 +10,7 @@ public class SchedulingConnection {
 
         }
 
-    // JDBC driver name and database URL
-//    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    // JDBC database URL
     static final String DB_URL = "jdbc:postgresql://kandula.db.elephantsql.com:5432/rxikhsae";
 
     //  Database credentials
@@ -28,8 +27,6 @@ public class SchedulingConnection {
         Statement stmt = null;
         procIterator= processCollection.createIterator();
         try{
-            //STEP 2: Register JDBC driver
-//            Class.forName("com.mysql.jdbc.Driver");
 
             //STEP 3: Open a connection
             System.out.println("Connecting to a selected database...");

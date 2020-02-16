@@ -19,7 +19,7 @@ public class ObserverCompletion implements Observer {
     public void update(int cs) {
         this.completion=cs;
 
-        for (int i = 0; i < completion; i++) {
+        for (int i = 0; i <= completion; i++) {
             if (i % 2 == 0) {
                 Label timeline = new Label(String.valueOf(i));
 //                    timeline.setAlignment(Pos.CENTER);

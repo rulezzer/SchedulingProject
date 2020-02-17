@@ -1,5 +1,4 @@
 # Scheduling Algorithm Simulator
-Scehduling Project Algorithm
 
 ## Description
 The purpose of this utility is to help and support the IT student and enthusiast dealing with Operating Systems.

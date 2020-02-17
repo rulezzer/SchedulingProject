@@ -1,6 +1,9 @@
 package com.company;
 
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +18,6 @@ public class Process implements ProcessInterface{
     private int waitingTime;
     private int startingTime;
     private float turnAroundNorm;
-    private int contextSwitch;
 
 
 
@@ -160,12 +162,6 @@ public class Process implements ProcessInterface{
         return turnAroundNorm;
     }
 
-
-    public void setIdProc(Integer idProc) {
-
-
-        this.idProc = idProc;
-    }
 
     public Integer getIdProc() {
 

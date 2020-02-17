@@ -25,6 +25,10 @@ public class Schedule {
           this.schedulingStrategy.schedule(processCollection,contextSwitch);
 
             SchedulingConnection SchedConn = new SchedulingConnection();
+            Delete delete = new Delete(SchedConn);
+            RecordTableView recordTableView = new RecordTableView();
+
+            recordTableView.placeDelete(delete);
 
             SchedConn.connect(processCollection);
         }

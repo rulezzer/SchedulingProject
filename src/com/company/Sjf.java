@@ -9,28 +9,6 @@ public class Sjf implements SchedulingStrategy{
     @Override
     public void schedule(ProcessCollections processCollections, int contextSwitch) {
 
-
-//        for (Process proc : processList) System.out.println("1 arr " +proc.getArrivalTime() + " bu " + proc.burst);
-//
-//        Collections.sort(processList, Comparator.comparing(Process::getArrivalTime).thenComparing(Process::getBurst));
-//
-//        for (Process proc : processList) System.out.println("2 arr " +proc.getArrivalTime() + " bu " + proc.burst);
-//
-//         List<Process> copiaaRRAY = processList;
-//
-//         int ars= copiaaRRAY.size();
-//
-//        for (int i = 1; i < ars-1; i++) {
-//            for (int k=i+1; k < ars; k++){
-//                if (copiaaRRAY.get(i).burst > copiaaRRAY.get(k).burst && copiaaRRAY.get(k).arrivalTime <= copiaaRRAY.get(i).arrivalTime+copiaaRRAY.get(i).burst) {
-//
-//                    Collections.swap(processList, i, k);
-//                    System.out.println("scambio");
-//                }
-//        }
-//        }
-//        for (Process proc : processList) System.out.println("3 arr " +proc.getArrivalTime() + " bu " + proc.burst);
-
         List<Process> processList = processCollections.getList();
         Collections.sort(processList, Comparator.comparing(Process::getArrivalTime).thenComparing(Process::getBurst));
 

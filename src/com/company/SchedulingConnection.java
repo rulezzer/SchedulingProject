@@ -101,23 +101,23 @@ public class SchedulingConnection {
         return conn;
     }//end main
 
-    public int delete(int id) {
-        String SQL = "DELETE FROM process WHERE " + timeStamp + " = ?";
+    public void delete(int IDtoDelete) {
+        try {
 
-        int affectedrows = 0;
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
+            // our SQL SELECT query.
+            String query = "DELETE FROM process WHERE \"ID\" = '"+IDtoDelete+"' ";
 
+            // create the java statement
+            Statement st = conn.createStatement();
 
-        try (Connection conn = connect(processCollections);
-             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+            // execute the query, and get a java resultset
+            st.executeUpdate(query);
 
-            pstmt.setInt(1, id);
-
-            affectedrows = pstmt.executeUpdate();
-
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+        }  catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
         }
-        return affectedrows;
     }
 }//end JDBCExample

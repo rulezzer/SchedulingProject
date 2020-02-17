@@ -13,6 +13,7 @@ public class ProcessIterator implements Iterator {
     }
 
     public int getPosition(){  return this.position; }
+
     public Object next()
     {
         Process proc =  processList.get(position);

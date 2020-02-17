@@ -33,16 +33,20 @@ public class ProcessCollections implements CollectionSet {
     public int getCompletion(Process process, int contextSwitch){
         return processList.get(processList.indexOf(process)).CalculateCompletion(processList, processList.indexOf(process), contextSwitch);
     }
+
     public int getStartingTime(Process process, int contextSwitch){
         return processList.get(processList.indexOf(process)).getStartingTime(processList, processList.indexOf(process), contextSwitch);
     }
+
     public void sort(){
         processList.sort(Comparator.comparing(Process::getIdProc));
     }
 
     public void addProc()
     {
+        //Prototype
         proces = new Process();
+
         // The first position (0) is for the "original", the clones follows
         Process clonedProcess = (Process) processMaker.getClone(proces);
 
@@ -54,6 +58,7 @@ public class ProcessCollections implements CollectionSet {
     {
         processList.remove(processList.size() - 1);
     }
+
     public Iterator createIterator(){
         return new ProcessIterator(processList);
     }

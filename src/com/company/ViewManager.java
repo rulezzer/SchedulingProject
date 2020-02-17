@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ViewManager {
@@ -57,7 +56,7 @@ public class ViewManager {
         HBox bottombox = addHBottomBox();
         border.setTop(hbox);
         border.setBottom(bottombox);
-        mainScene = new Scene(border, 800, 500);
+        mainScene = new Scene(border, 900, 500);
 
         mainStage.setScene(mainScene);
 
@@ -75,29 +74,16 @@ public class ViewManager {
 //        selectedImage.layoutYProperty().bind(mainScene.heightProperty().subtract(selectedImage.fitHeightProperty()).divide(5).subtract(hbox.getHeight()));
 
         HBox himagebox = new HBox();
-        himagebox.getChildren().add(selectedImage);
-//        border.setCenter(himagebox);
+//        himagebox.getChildren().add(selectedImage);
+        border.setCenter(himagebox);
 
 
 //        mainScene.getChildren().add(selectedImage);
         himagebox.setMaxHeight(mainScene.getHeight());
         BorderPane.setAlignment(himagebox, Pos.TOP_CENTER);
 
-
     }
 
-
-    private void addNewProcess() {
-
-        // Handles routing makeCopy method calls to the right subclasses of Process
-        ProcessFactory processMaker = new ProcessFactory();
-        Process proces = new Process();
-        // The first position (0) is for the "original", the clones follows
-        Process clonedProcess = (Process) processMaker.getClone(proces);
-
-        processList.add(clonedProcess);
-
-    }
 
 
     //Class containing grid (see below)
@@ -146,8 +132,6 @@ public class ViewManager {
             tileRect.setPadding(new Insets(10, 10, 10, 10));
 
             Label nproc = new Label("Process " + String.valueOf(i + 1));
-//            nproc.fontProperty(FontWeight.BOLD);
-            nproc.setStyle("-fx-font-weight: bold");
             nproc.setTextFill(Color.WHITE);
             nproc.setAlignment(Pos.BASELINE_CENTER);
 
@@ -170,7 +154,6 @@ public class ViewManager {
 
             burstRow.getChildren().addAll(burstLabel, addBurstField(i));
 
-//            System.out.println(processList.get(i).getIdProc);
             tileRect.getChildren().addAll(nproc, atRow, burstRow);
 
             return tileRect;
@@ -277,13 +260,11 @@ public class ViewManager {
     }
 
 
-
+    // Priority based algorithm not implemented
     private CheckBox addPriorityCheckBox() {
         CheckBox priorityCheck = new CheckBox("Priority");
         priorityCheck.setTextFill(Color.WHITE);
-
         priorityCheck.setDisable(true);
-
 
         return priorityCheck;
     }
@@ -313,7 +294,6 @@ public class ViewManager {
 
         HBox miniHBox = new HBox();
         HBox miniHBox2 = new HBox();
-//        miniHBox.setAlignment(Pos.BASELINE_CENTER);
 
         var numProcessField = new Spinner<Integer>();
         var ff = new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 10, 2);
@@ -325,11 +305,9 @@ public class ViewManager {
             if (Integer.parseInt(newValue) > Integer.parseInt(oldValue)) {
 
                 //create processes when I change
-                //addNewProcess();
                 processCollections.addProc();
 
             } else {
-                //processList.remove(processList.size() - 1);
                 processCollections.removeProc();
             }
             //  System.out.println(java.util.List.of(processList));
@@ -348,10 +326,7 @@ public class ViewManager {
 
         });
 
-        // processList.add(process);
-        //addNewProcess();
 
-        // DA OTTIMIZZARE
         gridDisplay.setColumns(processCollections.getSize());
 
         addScheduleButton().setLayoutY(numProcessField.getLayoutY() + 100);
@@ -368,10 +343,15 @@ public class ViewManager {
         sAlRow.setAlignment(Pos.BASELINE_RIGHT);
         sAlRow.setStyle("-fx-text-fill: white;");
 
-
-        miniHBox.getChildren().addAll(new Label("N. Proc"), numProcessField);
-        miniHBox2.getChildren().addAll(new Label("CS"), addCSField());
-        sAlRow.getChildren().addAll(new Label("Algorithm"), comboBox);
+        Label nproc_label = new Label("N. Processes");
+        nproc_label.setTextFill(Color.WHITE);
+        miniHBox.getChildren().addAll(nproc_label, numProcessField);
+        Label cs_label = new Label("Context Switch");
+        cs_label.setTextFill(Color.WHITE);
+        miniHBox2.getChildren().addAll(cs_label, addCSField());
+        Label alg_label = new Label("Algorithm");
+        alg_label.setTextFill(Color.WHITE);
+        sAlRow.getChildren().addAll(alg_label, comboBox);
 
         //add to the VBox buttons and combobox
         buttonVBox.setSpacing(10);

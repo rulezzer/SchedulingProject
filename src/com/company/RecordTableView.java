@@ -58,7 +58,7 @@ public class RecordTableView {
     //metodo per command
     public void placeDelete(Delete delete){
 
-        queue.add(delete);
+
         delete.executeAction(id);
 
     }

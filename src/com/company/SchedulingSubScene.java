@@ -4,10 +4,8 @@ import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.SubScene;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -19,10 +17,7 @@ import java.util.*;
 
 public class SchedulingSubScene extends SubScene {
 
-    //Scehduling scheme
-
     AnchorPane root = (AnchorPane) this.getRoot();
-
 
     private static final int TILE_SIZE = 20;
 
@@ -32,15 +27,14 @@ public class SchedulingSubScene extends SubScene {
 
     protected ProcessCollections processCollections;
     private Iterator procIterator;
-    private List<Process> processList;
     private int contextSwitch;
 
     //flyweight init
     RectUnit rectUnit = new RectUnit();
 
 
-    public SchedulingSubScene( ProcessCollections processCollections, int cs) {
-        super(new AnchorPane(), 1000, 230);
+    public SchedulingSubScene(ProcessCollections processCollections, int cs) {
+        super(new AnchorPane(), 1200, 230);
 
         this.processCollections = processCollections;
         this.contextSwitch = cs;
@@ -57,8 +51,6 @@ public class SchedulingSubScene extends SubScene {
 
         root.getChildren().add(processColumn);
 
-//        root.setStyle("-fx-background-color: rgba(255, 255, 255, 0.5);");
-
 
         StackPane vuoto = new StackPane();
         Label timeLine = new Label("");
@@ -70,7 +62,6 @@ public class SchedulingSubScene extends SubScene {
         GridPane.setConstraints(vuoto,0,0);
         processColumn.getChildren().addAll(vuoto);
 
-        // for (Process process : processList) {
 
         while(procIterator.hasNext()){
             Process proc=(Process) procIterator.next();
@@ -111,16 +102,7 @@ public class SchedulingSubScene extends SubScene {
                 grid.getChildren().addAll(pinkUnit);
 
 
-                FadeTransition ft = new FadeTransition(Duration.millis(500), pinkUnit);
-                ft.setFromValue(0.25);
-                ft.setToValue(1);
-                ft.play();
-
-                TranslateTransition openNav = new TranslateTransition(Duration.millis(500), pinkUnit);
-                openNav.fromXProperty().setValue(-10);
-                openNav.setToX(0);
-
-                openNav.play();
+                FadeTransition(pinkUnit);
                 TranslateTransition closeNav = new TranslateTransition(new Duration(500), pinkUnit);
 
                 closeNav.setToX(-(pinkUnit.getWidth()));
@@ -163,6 +145,12 @@ public class SchedulingSubScene extends SubScene {
     }
 
     private void specialEffects(Rectangle processUnit) {
+        FadeTransition(processUnit);
+        TranslateTransition closeNav = new TranslateTransition(new Duration(1000), processUnit);
+        closeNav.setToX(-(processUnit.getWidth()));
+    }
+
+    private void FadeTransition(Rectangle processUnit) {
         FadeTransition ft = new FadeTransition(Duration.millis(500), processUnit);
         ft.setFromValue(0.25);
         ft.setToValue(1);
@@ -172,8 +160,6 @@ public class SchedulingSubScene extends SubScene {
         openNav.fromXProperty().setValue(-10);
         openNav.setToX(0);
         openNav.play();
-        TranslateTransition closeNav = new TranslateTransition(new Duration(1000), processUnit);
-        closeNav.setToX(-(processUnit.getWidth()));
     }
 
     public GridPane createTimeline() {

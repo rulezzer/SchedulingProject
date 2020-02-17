@@ -2,7 +2,6 @@ package com.company;
 
 import java.sql.*;
 import java.util.Date;
-import java.util.List;
 
 public class SchedulingConnection {
 
@@ -40,8 +39,6 @@ public class SchedulingConnection {
             System.out.println("print");
 
 
-
-
             StringBuilder sbArrival = new StringBuilder("");
             StringBuilder sbBurst = new StringBuilder("");
             StringBuilder sbidProc = new StringBuilder("");
@@ -77,13 +74,11 @@ public class SchedulingConnection {
 
             System.out.println("Inserted records into the table...");
 
-        }catch(SQLException se){
+        } catch(Exception se){
             //Handle errors for JDBC
             se.printStackTrace();
-        }catch(Exception e){
-            //Handle errors for Class.forName
-            e.printStackTrace();
-        }finally{
+        }//Handle errors for Class.forName
+        finally{
             //finally block used to close resources
             try{
                 if(stmt!=null)
@@ -120,4 +115,4 @@ public class SchedulingConnection {
             System.err.println(e.getMessage());
         }
     }
-}//end JDBCExample
+}

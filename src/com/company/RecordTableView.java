@@ -1,27 +1,26 @@
 package com.company;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Queue;
+
+
 
 //AGENT: COMMAND
 public class RecordTableView {
@@ -38,6 +37,7 @@ public class RecordTableView {
 
     private List<Array> arrivalList = new ArrayList<Array>();
     private List<Array> burstList = new ArrayList<Array>();
+    private List<Integer> contextSwitch = new ArrayList<>();
 
 
 
@@ -47,9 +47,11 @@ public class RecordTableView {
     static final String USER = "rxikhsae";
     static final String PASS = "hrdIjtZaLpr4ynLFo1nwVxtoPfL-MJdp";
 
-    private TableView table;
-    private ObservableList data;
+    private TableView<ProcInfo> table;
+    private ObservableList<ProcInfo> data;
 
+    TableView<ProcInfo> tab = new TableView();
+    TableView.TableViewSelectionModel tsm = tab.getSelectionModel();
 
     //metodo per command
     public void placeDelete(Delete delete){
@@ -58,12 +60,11 @@ public class RecordTableView {
         delete.executeAction(id);
 
     }
-    //
+
+    TableColumn IDColumn = new TableColumn("ID (timestamp)");
 
     public RecordTableView() {
         recordStage = new Stage();
-
-
 
         HBox hbox = addHBox();
         border.setTop(hbox);
@@ -78,32 +79,19 @@ public class RecordTableView {
         recordStage.setScene(mainScene);
         recordStage.centerOnScreen();
 
-
-
         hbox.getChildren().addAll(spacer, addDeleteButton());
 
-        table = new TableView();
+
+        tsm.setSelectionMode(SelectionMode.MULTIPLE);
+
 
         getData();
-//        buildData(IDList);
-//        createTableView(IDList);
-//        TableView<ObservableList<String>> tableView = createTableView(IDList);
-//        addTableView();
-
-        border.setCenter(table);
-
-        data = buildData();
-
-        table.setItems(data);
-
-        TableColumn titleCol = new TableColumn("ID");
-
-        table.getColumns().setAll(titleCol);
-        table.setPrefWidth(450);
-        table.setPrefHeight(300);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
 
+
+
+
+//        border.setCenter(tv);
 
 
     }
@@ -125,29 +113,61 @@ public class RecordTableView {
             ResultSet rs = st.executeQuery(query);
 
 
-
+            data = FXCollections.observableArrayList();
 
             // iterate through the java resultset
-            while (rs.next())
-            {
+            while (rs.next()) {
                 IDList.add(rs.getInt("ID"));
 //                idProc = rs.getArray("idProc");
                 arrivalList.add(rs.getArray("ArrivalTime"));
                 burstList.add(rs.getArray("Burst"));
-
-                // print the results
-
-//                System.out.println("ID: "+timestamp_ID+" - idProc: "+idProc);
+//                contextSwitch.add(rs.getInt("contextSwitch"));
+                System.out.println("QUI");
 
 
+                data.add(new ProcInfo(rs.getInt(1), rs.getString(2), rs.getString(3)/*, rs.getInt(5)*/));
+
+
+                System.out.println("QUI");
             }
 
-            for (int i= 0; i< IDList.size(); i++){
-                System.out.println("ID "+IDList.get(i)+"arr "+arrivalList.get(i));
+
+
+            IDColumn.setCellValueFactory(new PropertyValueFactory<>("ID"));
+
+            TableColumn arrivalColumn = new TableColumn("Arrival Time");
+            arrivalColumn.setCellValueFactory(new PropertyValueFactory<>("ArrivalTime"));
+
+            TableColumn burstColumn = new TableColumn("Burst");
+            burstColumn.setCellValueFactory(new PropertyValueFactory<>("Burst"));
+
+//            TableColumn contextSwitchColumn = new TableColumn("Context Switch");
+//            contextSwitchColumn.setCellValueFactory(new PropertyValueFactory<>("contextSwitch"));
+
+
+            tab.getColumns().addAll(IDColumn, arrivalColumn, burstColumn /*, contextSwitchColumn*/);
+
+            tab.getItems().addAll(data);
+
+
+
+
+
+
+
+
+
+
+            border.setCenter(tab);
+
+            for (int i = 0; i < IDList.size(); i++){
+                System.out.println("ID "+IDList.get(i)+"  arr "+arrivalList.get(i));
             }
 
 
             st.close();
+
+
 
 
         }
@@ -170,53 +190,12 @@ public class RecordTableView {
 
 //    private TableView addTableView(){
 //
-////        TableView<ObservableList<String>> tableView = createTableView(IDList);
-//
-//
-////        TableColumn columnOne = new TableColumn("One");
-////        TableColumn columnTwo = new TableColumn("Two");
-//
-////        tableView.getColumns().addAll(columnOne, columnTwo);
-////
-//
 ////        return tableView;
 //    }
 
-    private ObservableList buildData() {
 
 
-        ObservableList data = FXCollections.observableList(IDList);
-
-//        for (Object row : IDList) {
-//            data.add(FXCollections.observableArrayList(row.toString()));
-//            System.out.println((FXCollections.observableArrayList(row.toString())));
 //
-//        }
-        return data;
-    }
-
-//    private TableView<ObservableList<String>> createTableView(List dataArray) {
-//        TableView<ObservableList<String>> tableView = new TableView<>();
-//        tableView.setItems(buildData(dataArray));
-//
-//        System.out.println(IDList.size());
-//
-//        for (Object row : IDList) {
-//
-//            System.out.println("jjj"+row + "     "+IDList.indexOf(row));
-//
-////        }
-////        for (int i = 0; i < IDList.size(); i++) {
-////            final int curCol = i;
-////            final TableRow<ObservableList<String> row = new TableRow<>(
-////                    IDList.get(i)
-////            );
-////            row.set(
-////                    param -> new ReadOnlyObjectWrapper<>(param.getValue().get(curCol))
-////            );
-////            tableView.getColumns().add(row);
-//            System.out.println("columns add");
-//        }
 //
 //        return tableView;
 //    }
@@ -224,12 +203,51 @@ public class RecordTableView {
 
     public Button addDeleteButton(){
 
-
         Button deleteB = new Button("Delete");
         deleteB.setAlignment(Pos.TOP_RIGHT);
+
+        deleteB.setOnAction(actionEvent -> {
+            System.out.println("delete pressed");
+
+            deleteRow();
+
+        });
+
         return deleteB;
     }
 
+    public void deleteRow(){
+        if (tsm.isEmpty()) System.out.println("Please select a row to delete");
+
+        var selectedItem = tab.getSelectionModel().getSelectedItem();
+        int IDtoDelete = tab.getSelectionModel().getSelectedItem().getID();
+        deleteDBRow(IDtoDelete);
+        tab.getItems().remove(selectedItem);
+        System.out.println("removed "+ IDtoDelete);
+
+
+    }
+
+    public void deleteDBRow(int IDtoDelete){
+
+        try {
+
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // our SQL SELECT query.
+            String query = "DELETE FROM process WHERE \"ID\" = '"+IDtoDelete+"' ";
+
+            // create the java statement
+            Statement st = conn.createStatement();
+
+            // execute the query, and get a java resultset
+            st.executeUpdate(query);
+
+        }  catch (Exception e) {
+                System.err.println("Got an exception! ");
+                System.err.println(e.getMessage());
+            }
+    }
 
 
 

@@ -5,7 +5,7 @@ The purpose of this utility is to help and support the IT student and enthusiast
 The idea is to implement an application that simulates the management of process scheduling in a multiprogrammed system with non-preemptive algorithms (such as First-Come First-Served, Shortest Job First) and that calculates the Turnaround values and the average waiting time, all considering the context switch.
 
 ### Report
-Here's the [link in italian](https://github.com/phaeena/SchedulingProject/blob/master/Relazione%20Programmazione%203%20-%20Caccavale%20Cangiano%20Cifariello.pages) to the final report in italian in .pages format.
+Here's the [link](https://github.com/phaeena/SchedulingProject/blob/master/Relazione%20Programmazione%203%20-%20Caccavale%20Cangiano%20Cifariello.pages) to the final report in italian in .pages format.
 
 ### Screenshot
 
